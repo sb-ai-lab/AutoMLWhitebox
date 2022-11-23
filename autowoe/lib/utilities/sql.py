@@ -68,16 +68,16 @@ def prepare_number(
     #     mark_case = ", ".join(str(m) for m in feature_mark_values)
     #     feature += """  WHEN {} IN ({}) THEN {}\n""".format(f_val, mark_case, mark_val)
 
-    # create regular bins
-    for grp, val in enumerate(woe_dict.split):
-        enc_val = round(woe_dict.cod_dict[grp], r_val)
-        feature += """  WHEN {0} <= {1} THEN {2}\n""".format(f_val, round(val, round_features), enc_val)
-
     for mv in feature_mark_values:
         # enc = "__Mark__{}__".format(mv)
         enc = mark_encoding[name][mv]
         enc_val = round(woe_dict.cod_dict[enc], r_val)
         feature += """  WHEN {0} == {1} THEN {2}\n""".format(f_val, mv, enc_val)
+
+    # create regular bins
+    for grp, val in enumerate(woe_dict.split):
+        enc_val = round(woe_dict.cod_dict[grp], r_val)
+        feature += """  WHEN {0} <= {1} THEN {2}\n""".format(f_val, round(val, round_features), enc_val)
 
     # create last else val
     enc_val = round(woe_dict.cod_dict[len(woe_dict.split)], r_val)
@@ -183,6 +183,13 @@ def prepare_category(
     #     mark_case = ", ".join(mark_case)
     #     feature += """  WHEN {} IN ({}) THEN {}\n""".format(f_val, mark_case, mark_val)
 
+    for mv in feature_mark_values:
+        # enc = "__Mark__{}__".format(mv)
+        enc = mark_encoding[name][mv]
+        idx_enc = woe_dict.split[enc]
+        enc_val = round(woe_dict.cod_dict[idx_enc], r_val)
+        feature += """  WHEN {0} == {1} THEN {2}\n""".format(f_val, check_cat_symb(mv), enc_val)
+
     # create regular bins
     passed = {small_grp}
     for grp in woe_dict.split.values():
@@ -204,13 +211,6 @@ def prepare_category(
                 feature += """  WHEN {0} == {1} THEN {2}\n""".format(f_val, search_vals[0], enc_val)
 
             passed.add(grp)
-
-    for mv in feature_mark_values:
-        # enc = "__Mark__{}__".format(mv)
-        enc = mark_encoding[name][mv]
-        idx_enc = woe_dict.split[enc]
-        enc_val = round(woe_dict.cod_dict[idx_enc], r_val)
-        feature += """  WHEN {0} == {1} THEN {2}\n""".format(f_val, check_cat_symb(mv), enc_val)
 
     # create last ELSE with small
     feature += """  ELSE {1}\nEND AS {0}""".format(
