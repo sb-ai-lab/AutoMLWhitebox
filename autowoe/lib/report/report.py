@@ -15,7 +15,6 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
-import scipy as sp
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
@@ -707,7 +706,7 @@ class ReportDeco:
 
     @staticmethod
     def calc_vif(data_enc):
-        cc = sp.corrcoef(data_enc.values, rowvar=False)
+        cc = np.corrcoef(data_enc.values, rowvar=False)
         if cc.ndim < 2:
             return []
         VIF = np.round(np.linalg.inv(cc).diagonal(), 6)
