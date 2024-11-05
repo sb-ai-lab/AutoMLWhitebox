@@ -10,7 +10,6 @@ from typing import TypeVar
 
 import numpy as np
 import pandas as pd
-import scipy as sp
 
 from sklearn.metrics import r2_score
 from sklearn.metrics import roc_auc_score
@@ -71,7 +70,7 @@ class ComposedSelector:
             mask_good_values = pd.Series([True] * train.shape[0], index=train.index)
         train_values = train[mask_good_values].values
 
-        cc = np.abs(sp.corrcoef(train_values, rowvar=False))
+        cc = np.abs(np.corrcoef(train_values, rowvar=False))
         self.precomp_corr = pd.DataFrame(cc, index=train.columns, columns=train.columns)
 
         metrics = []
