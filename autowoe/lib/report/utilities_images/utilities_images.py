@@ -197,7 +197,7 @@ def plot_woe_bars(train_enc, train_target, test_enc, test_target, target_name, c
 def plot_backlash_check(predict_proba, data_enc, target, col, path):
     sns.set(style="whitegrid", font_scale=1.5)
     df = pd.DataFrame({"pred": predict_proba, col: data_enc[col], "Target": target})
-    grp = df.groupby(col)["pred", "Target"].mean()
+    grp = df.groupby(col)[["pred", "Target"]].mean()
     grp.plot(figsize=(10, 10)).get_figure().savefig(path, bbox_inches="tight")
     plt.close()
 

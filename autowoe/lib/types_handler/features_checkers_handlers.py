@@ -85,7 +85,7 @@ def cat_checker(feature: pd.Series) -> bool:
         Flag.
 
     """
-    if feature.dtype in [object, str, np.str]:
+    if feature.dtype in [object, str]:
         return True
 
     feature_unique = feature.unique()

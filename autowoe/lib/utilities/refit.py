@@ -154,7 +154,7 @@ def refit_simple(
             model_intercept = model.intercept_
 
         # check negative coefs here if interp
-        sl_pos_coef = np.zeros((x_train_.shape[1],), dtype=np.bool)
+        sl_pos_coef = np.zeros((x_train_.shape[1],), dtype=bool)
         if interp:
             sl_pos_coef = model.coef_[0] >= 0 if task == TaskType.BIN else model.coef_[0] <= 0
 
