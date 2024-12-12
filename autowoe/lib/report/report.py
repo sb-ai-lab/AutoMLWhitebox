@@ -656,7 +656,7 @@ class ReportDeco:
         for feature in self.features_fit.index:
             feature_subset = [x for x in self.features_fit.index if x != feature]
             X, y = self.__train_enc[feature_subset].values, self.__train_target.values
-            clf = LogisticRegression(penalty="none", solver="lbfgs", warm_start=False, intercept_scaling=1)
+            clf = LogisticRegression(penalty=None, solver="lbfgs", warm_start=False, intercept_scaling=1)
             clf.fit(X, y)
             test_subset = self.__test_enc[feature_subset].values
             prob = 1 / (1 + np.exp(-(np.dot(test_subset, clf.coef_[0]) + clf.intercept_[0])))
