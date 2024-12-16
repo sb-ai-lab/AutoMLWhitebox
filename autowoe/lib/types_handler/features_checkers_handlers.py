@@ -85,7 +85,10 @@ def cat_checker(feature: pd.Series) -> bool:
         Flag.
 
     """
-    if feature.dtype in [object, str]:
+    dtypes = [object, str]
+    if np.__version__ < "1.18.0":
+        dtypes.append(np.str)
+    if feature.dtype in dtypes:
         return True
 
     feature_unique = feature.unique()
