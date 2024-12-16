@@ -70,7 +70,7 @@ class ComposedSelector:
             mask_good_values = pd.Series([True] * train.shape[0], index=train.index)
         train_values = train[mask_good_values].values
 
-        cc = np.abs(np.corrcoef(train_values, rowvar=0))
+        cc = np.abs(np.corrcoef(train_values, rowvar=False))
         self.precomp_corr = pd.DataFrame(cc, index=train.columns, columns=train.columns)
 
         metrics = []
