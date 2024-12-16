@@ -707,7 +707,7 @@ class ReportDeco:
 
     @staticmethod
     def calc_vif(data_enc):
-        cc = np.corrcoef(data_enc.values, rowvar=0)
+        cc = np.corrcoef(data_enc.values, rowvar=False)
         if cc.ndim < 2:
             return []
         VIF = np.round(np.linalg.inv(cc).diagonal(), 6)
