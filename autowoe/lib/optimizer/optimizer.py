@@ -94,13 +94,17 @@ class TreeParamOptimizer:
         }
         unite_params = {**params, **default_tree_params}
 
+        score_add_string = ""
+        if lgb.__version__ >= "4.1.0":
+            score_add_string = "valid "
+
         scores = []
         for seed in range(n):
             folds = self.__get_folds(seed)
             cv_results = lgb.cv(
                 params=unite_params, train_set=self._lgb_train, num_boost_round=1, folds=folds, metrics=self._metric
             )
-            scores.append(cv_results["{}-mean".format(self._cv_metric_map[self._metric])])
+            scores.append(cv_results[score_add_string + "{}-mean".format(self._cv_metric_map[self._metric])])
 
         return scores
 
