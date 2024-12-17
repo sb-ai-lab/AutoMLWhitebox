@@ -15,6 +15,7 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
+import sklearn
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
@@ -650,7 +651,7 @@ class ReportDeco:
     def __refit_leave_one_out(self):
         if len(self.features_fit) < 2:
             return []
-        logreg_penalty = None if np.__version__ >= "1.2.0" else "none"
+        logreg_penalty = None if sklearn.__version__ >= "1.2.0" else "none"
 
         result = dict()
         initial_score = roc_auc_score(y_true=self.__test_target.values, y_score=self.__predict_proba)
