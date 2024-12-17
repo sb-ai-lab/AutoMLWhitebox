@@ -6,6 +6,7 @@ from typing import Tuple
 from typing import cast
 
 import numpy as np
+import sklearn
 
 from scipy import linalg
 from scipy import stats
@@ -132,7 +133,7 @@ def refit_simple(
 
     n = -1
 
-    logreg_penalty = None if np.__version__ >= "1.2.0" else "none"
+    logreg_penalty = None if sklearn.__version__ >= "1.2.0" else "none"
 
     while True:
         n += 1
@@ -246,7 +247,7 @@ def calc_p_val_on_valid(
         p values, b vars.
 
     """
-    logreg_penalty = None if np.__version__ >= "1.2.0" else "none"
+    logreg_penalty = None if sklearn.__version__ >= "1.2.0" else "none"
 
     if task == TaskType.BIN:
         model = LogisticRegression(penalty=logreg_penalty, solver="lbfgs", warm_start=False, intercept_scaling=1)
