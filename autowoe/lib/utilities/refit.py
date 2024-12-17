@@ -6,6 +6,7 @@ from typing import Tuple
 from typing import cast
 
 import numpy as np
+import sklearn
 
 from scipy import linalg
 from scipy import stats
@@ -132,6 +133,8 @@ def refit_simple(
 
     n = -1
 
+    logreg_penalty = None if sklearn.__version__ >= "1.2.0" else "none"
+
     while True:
         n += 1
         assert sl_ok.sum() > 0, "No features left to fit on iter"
@@ -143,7 +146,7 @@ def refit_simple(
         ok_idx = np.arange(x_train.shape[1])[sl_ok]
 
         if task == TaskType.BIN:
-            model = LogisticRegression(penalty="none", solver="lbfgs", warm_start=False, intercept_scaling=1)
+            model = LogisticRegression(penalty=logreg_penalty, solver="lbfgs", warm_start=False, intercept_scaling=1)
             model.fit(x_train_, y)
             model_coef = model.coef_[0]
             model_intercept = model.intercept_[0]
@@ -154,7 +157,7 @@ def refit_simple(
             model_intercept = model.intercept_
 
         # check negative coefs here if interp
-        sl_pos_coef = np.zeros((x_train_.shape[1],), dtype=np.bool)
+        sl_pos_coef = np.zeros((x_train_.shape[1],), dtype=bool)
         if interp:
             sl_pos_coef = model.coef_[0] >= 0 if task == TaskType.BIN else model.coef_[0] <= 0
 
@@ -244,8 +247,10 @@ def calc_p_val_on_valid(
         p values, b vars.
 
     """
+    logreg_penalty = None if sklearn.__version__ >= "1.2.0" else "none"
+
     if task == TaskType.BIN:
-        model = LogisticRegression(penalty="none", solver="lbfgs", warm_start=False, intercept_scaling=1)
+        model = LogisticRegression(penalty=logreg_penalty, solver="lbfgs", warm_start=False, intercept_scaling=1)
         model.fit(x_train, y)
 
         return calc_p_val(x_train, model.coef_[0], model.intercept_[0])
