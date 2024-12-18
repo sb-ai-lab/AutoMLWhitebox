@@ -595,10 +595,10 @@ class ReportDeco:
 
         for df in [train_binned, test_binned]:
             df["Score"] = np.log(df["P"] / (1 - df["P"]))
-            
+
             if bins is None:
-                _intervals, bins = pd.cut(df['Score'][~np.isinf(df['Score'])], bin_count, retbins=True)
-            df['ScoreBin'] = pd.cut(df['Score'], bins, retbins=False)
+                _intervals, bins = pd.cut(df["Score"][~np.isinf(df["Score"])], bin_count, retbins=True)
+            df["ScoreBin"] = pd.cut(df["Score"], bins, retbins=False)
 
         return train_binned, test_binned
 

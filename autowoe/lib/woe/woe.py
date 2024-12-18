@@ -118,14 +118,14 @@ class WoE:
         good_stats = total.loc[
             [x for x in total.index if type(x) in [int, float] or x in ("__Small__", "__NaN__") or is_mark_prefix(x)]
         ]
-        
+
         # первая обработка - мерджим близкие нуллы/категории
         nsm_values = (
             [x for x in spec_values if "NaN" in x]
             + [x for x in spec_values if "Small" in x]
             + [x for x in spec_values if "Mark" in x]
         )
-        
+
         for key in nsm_values:
             if (key in ("__Small__", "__NaN__") or is_mark_prefix(key)) and key in good_stats.index:
 
@@ -153,7 +153,7 @@ class WoE:
         # TODO: re-right
         for key in good_stats.index.values:
             stat[key] = good_stats.loc[key, "woe"]
-        
+
         # далее обработка нуллов и маленьких категорий
         for key in nsm_values:
 
@@ -214,7 +214,7 @@ class WoE:
         df_cod = self.__df_cod_transform(x, spec_values)
         df_cod = df_cod.map(self.cod_dict)
         return df_cod
-    
+
     def split_feature(self, x: pd.Series, spec_values):
         """Split by Bins.
 
@@ -227,7 +227,7 @@ class WoE:
 
         """
         df_cod = self.__df_cod_transform(x, spec_values)
-        return df_cod    
+        return df_cod
 
     def fit_transform_cv(self, x: pd.Series, y: pd.Series, spec_values, cv_index_split: Dict[int, List[int]]):
         """Cross-Val WoE encoding.

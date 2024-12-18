@@ -50,7 +50,7 @@ class HTransform:
             "verbosity": -1,
         }
 
-        unite_params = {**default_tree_params, **tree_params, **{'num_threads': 1}}
+        unite_params = {**default_tree_params, **tree_params, **{"num_threads": 1}}
         lgb_train = lgb.Dataset(self.x.values.astype(np.float32)[:, np.newaxis], label=self.y)
         gbm = lgb.train(params=unite_params, train_set=lgb_train, num_boost_round=1)
 
