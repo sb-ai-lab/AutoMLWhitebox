@@ -1,15 +1,17 @@
 [tool.poetry]
 name = "AutoWoE"
-version = "1.3.2"
+version = "1.4.0"
 description = "Library for automatic interpretable model building (Whitebox AutoML)"
 authors = ["Vakhrushev Anton <btbpanda@gmail.com>"]
 readme = "README.md"
 homepage = "https://github.com/AILab-MLTools/AutoMLWhitebox"
 repository = "https://github.com/AILab-MLTools/AutoMLWhitebox"
 classifiers = [
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
     "Intended Audience :: Science/Research",
     "Development Status :: 3 - Alpha",
@@ -20,7 +22,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6.1"
+python = ">=3.8"
 numpy = "*"
 scipy = "*"
 pandas = "*"
