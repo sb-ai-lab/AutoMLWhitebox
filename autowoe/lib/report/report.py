@@ -693,7 +693,7 @@ class ReportDeco:
 
     @staticmethod
     def str_format(x):
-        return "{:.2f}".format(x)
+        return f"{x:.2f}"
 
     @staticmethod
     def calc_gini_confint(y_true, y_score, n=1000, p=0.05):

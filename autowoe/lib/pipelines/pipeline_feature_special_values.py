@@ -145,7 +145,7 @@ class FeatureSpecialValues:
                     #     d[enc_type] = None
 
                 for mv in self._mark_values[col]:
-                    enc_type_t = enc_type + "{}__".format(mv) if enc_type == "__Mark__" else enc_type
+                    enc_type_t = enc_type + f"{mv}__" if enc_type == "__Mark__" else enc_type
                     train_.loc[train_[col] == mv, col] = enc_type_t
                     mark_encoding[col][mv] = enc_type_t
                     # if self._features_type[col] != "cat":
