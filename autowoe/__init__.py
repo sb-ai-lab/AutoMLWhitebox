@@ -1,9 +1,9 @@
-import numpy as np
 import os
+
+import numpy as np
 
 from .lib.autowoe import AutoWoE
 from .lib.report.report import ReportDeco
-
 
 __all__ = ["AutoWoE", "ReportDeco"]
 

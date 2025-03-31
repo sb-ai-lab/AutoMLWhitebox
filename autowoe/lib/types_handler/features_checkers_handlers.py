@@ -1,12 +1,9 @@
 """Type feature checkers."""
 
-from typing import Optional
-from typing import Tuple
-from typing import cast
+from typing import Optional, Tuple, cast
 
 import numpy as np
 import pandas as pd
-
 
 F_UNIQUE = 5
 
@@ -69,7 +66,7 @@ def dates_handler(
     for seas in seasonality:
         new_feature_name = str(new_feature.name) + "__F__" + seas
 
-        new_feature_ = new_feature.map(lambda x: seas2func[seas](x))
+        new_feature_ = new_feature.map(lambda x: seas2func[seas](x))  # noqa: B023
         new_features.append((new_feature_name, new_feature_))
 
     return new_features, feature_type
@@ -92,7 +89,7 @@ def cat_checker(feature: pd.Series) -> bool:
         return True
 
     feature_unique = feature.unique()
-    if 2 < feature_unique.shape[0] <= F_UNIQUE and np.all((feature_unique.astype(np.int64) == feature_unique)):
+    if 2 < feature_unique.shape[0] <= F_UNIQUE and np.all(feature_unique.astype(np.int64) == feature_unique):
         return True
     else:
         return False

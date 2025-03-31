@@ -1,9 +1,7 @@
 # noqa: D100
 
 from copy import deepcopy
-from typing import Dict
-from typing import List
-from typing import Union
+from typing import Dict, List, Union
 
 import numpy as np
 import pandas as pd

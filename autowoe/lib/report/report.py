@@ -1,4 +1,4 @@
-# flake8: noqa
+# ruff: noqa
 
 import itertools
 import os
@@ -482,14 +482,10 @@ class ReportDeco:
         self.__stat["dategrouped_gini"] = []
         self.__stat["dategrouped_nan"] = []
         for columns in groupby:
-
             df_train = pd.concat(
                 [
                     pd.DataFrame(
-                        {
-                            "proba": self.__predict_proba_train,
-                            "target": self.__train_target.values,
-                        },
+                        {"proba": self.__predict_proba_train, "target": self.__train_target.values},
                         index=self.__train.index,
                     ),
                     pd.Series("train", index=self.__train.index, name="dataset")
@@ -503,11 +499,7 @@ class ReportDeco:
             df_test = pd.concat(
                 [
                     pd.DataFrame(
-                        {
-                            "proba": self.__predict_proba,
-                            "target": self.__test_target.values,
-                        },
-                        index=self.__test.index,
+                        {"proba": self.__predict_proba, "target": self.__test_target.values}, index=self.__test.index
                     ),
                     pd.Series("test", index=self.__test.index, name="dataset")
                     if columns == "dataset"
@@ -521,7 +513,7 @@ class ReportDeco:
             df_to_group = list(filter(lambda x: columns in x[1], [("train", df_train), ("test", df_test)]))
 
             if df_to_group:
-                plot_name_value = f'grouped_{columns if isinstance(columns, str) else "_".join(columns)}_value.png'
+                plot_name_value = f"grouped_{columns if isinstance(columns, str) else '_'.join(columns)}_value.png"
                 self.__stat["dategrouped_value"].append(plot_name_value)
                 plot_grouped(
                     list(map(lambda x: x[1], df_to_group)),
@@ -541,7 +533,7 @@ class ReportDeco:
                     lambda x: (x[0], x[1].groupby(columns).apply(lambda x: gini(x["target"], x["proba"]))), df_to_group
                 )
                 gini_df = pd.DataFrame(dict(gini_grouped))
-                plot_name_gini = f'grouped_{columns if isinstance(columns, str) else "_".join(columns)}_gini.png'
+                plot_name_gini = f"grouped_{columns if isinstance(columns, str) else '_'.join(columns)}_gini.png"
                 self.__stat["dategrouped_gini"].append(plot_name_gini)
                 plot_bars(gini_df, path=os.path.join(report_params["output_path"], plot_name_gini))
 
@@ -564,7 +556,7 @@ class ReportDeco:
                         }
                     )
                     plot_name_nan = (
-                        f'grouped_{columns if isinstance(columns, str) else "_".join(columns)}_nan_{feature}.png'
+                        f"grouped_{columns if isinstance(columns, str) else '_'.join(columns)}_nan_{feature}.png"
                     )
                     self.__stat["dategrouped_nan"].append(plot_name_nan)
                     plot_bars(

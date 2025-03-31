@@ -1,4 +1,4 @@
-# flake8: noqa
+# ruff: noqa
 
 import logging
 import sys

@@ -1,16 +1,8 @@
 """SQL-query utilities."""
 
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Tuple
-from typing import Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-from autowoe.lib.pipelines.pipeline_feature_special_values import MARK_SET
-from autowoe.lib.pipelines.pipeline_feature_special_values import NAN_SET
-from autowoe.lib.pipelines.pipeline_feature_special_values import SMALL_SET
-from autowoe.lib.pipelines.pipeline_feature_special_values import is_mark_prefix
+from autowoe.lib.pipelines.pipeline_feature_special_values import MARK_SET, NAN_SET, SMALL_SET, is_mark_prefix
 from autowoe.lib.utilities.utils import TaskType
 from autowoe.lib.woe.woe import WoE
 
@@ -81,8 +73,7 @@ def prepare_number(
 
     # create last else val
     enc_val = round(woe_dict.cod_dict[len(woe_dict.split)], r_val)
-    feature += f"""  ELSE {enc_val}
-END AS {name}"""
+    feature += f"""  ELSE {enc_val}\nEND AS {name}"""
 
     return feature
 
@@ -185,7 +176,6 @@ def prepare_category(
     passed = {small_grp}
     for grp in woe_dict.split.values():
         if grp not in passed:
-
             search_vals = [
                 x
                 for x in woe_dict.split
@@ -197,7 +187,7 @@ def prepare_category(
             # filter NaN and Small cases separatly
             enc_val = round(woe_dict.cod_dict[grp], r_val)
             if length > 1:
-                feature += f"""  WHEN {f_val} IN ({', '.join(search_vals)}) THEN {enc_val}\n"""
+                feature += f"""  WHEN {f_val} IN ({", ".join(search_vals)}) THEN {enc_val}\n"""
             elif length == 1:
                 feature += f"""  WHEN {f_val} == {search_vals[0]} THEN {enc_val}\n"""
 
@@ -211,8 +201,7 @@ def prepare_category(
         feature += f"""  WHEN {f_val} == {check_cat_symb(mv)} THEN {enc_val}\n"""
 
     # create last ELSE with small
-    feature += f"""  ELSE {small_val}
-END AS {name}"""
+    feature += f"""  ELSE {small_val}\nEND AS {name}"""
 
     return feature
 
@@ -270,7 +259,6 @@ def get_encoded_table(
     query = """SELECT\n"""
 
     for n, name in enumerate(model.features_fit.index):
-
         woe_dict = model.woe_dict[name]
 
         prep = None

@@ -1,0 +1,66 @@
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    "tests",
+    ".git",
+    "__pycache__",
+    "setup.py",
+    "build",
+    "dist",
+    "releases",
+    ".venv",
+    ".tox",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".vscode",
+    ".github",
+]
+
+# Same as Black.
+line-length = 120
+indent-width = 4
+
+target-version = "py38"
+
+[lint]
+select = [
+    "S", "B", "A",
+    "PLR0912",
+    "UP032",
+    "PERF401",
+    "D",
+    "TID252",
+     "C4", "F", "E", "N", "I", "PD", "PERF", ]
+ignore = [
+    "D203",
+    "D213",
+    "PD011",
+    "PD901",
+    "D107",
+    "D104",
+    "D103",
+    "E501",
+    "S101",
+    "N803",
+    "N806",
+    "D401",
+    "B904",
+
+    "UP032", # Delete after flynt merge
+    "PLR0912", # TODO: Fix branching
+    ]
+
+fixable = ["ALL"]
+
+
+[format]
+quote-style = "double"
+
+indent-style = "space"
+
+skip-magic-trailing-comma = false
+
+line-ending = "auto"
+
+docstring-code-format = true
+
+docstring-code-line-length = "dynamic"
