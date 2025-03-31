@@ -1,25 +1,17 @@
 # noqa: D100
 
 from collections import namedtuple
-from typing import List
-from typing import Mapping
-from typing import Sequence
-from typing import Tuple
-from typing import Union
+from typing import List, Mapping, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
-
-from sklearn.linear_model import LassoCV
-from sklearn.linear_model import LogisticRegressionCV
+from sklearn.linear_model import LassoCV, LogisticRegressionCV
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import BaseCrossValidator
 from sklearn.svm import l1_min_c
 
+from autowoe.lib.logging import get_logger
 from autowoe.lib.utilities.utils import TaskType
-
-from ..logging import get_logger
-
 
 logger = get_logger(__name__)
 

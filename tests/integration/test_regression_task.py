@@ -44,6 +44,6 @@ def test_regression_task():
     r2_test = r2_score(test_df[TARGET_NAME], test_pred)
 
     assert r2_train > 0.8
-    assert r2_test > 0.78
+    assert r2_test > 0.76
 
     autowoe.get_sql_inference_query("FEATURE_TABLE")

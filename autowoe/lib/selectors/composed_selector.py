@@ -1,24 +1,16 @@
 """Compose several selector."""
 
 from copy import copy
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Tuple
-from typing import TypeVar
+from typing import Any, Dict, List, Optional, Tuple, TypeVar
 
 import numpy as np
 import pandas as pd
+from sklearn.metrics import r2_score, roc_auc_score
 
-from sklearn.metrics import r2_score
-from sklearn.metrics import roc_auc_score
+from autowoe.lib.logging import get_logger
+from autowoe.lib.utilities.utils import TaskType, feature_changing
 
-from ..logging import get_logger
-from ..utilities.utils import TaskType
-from ..utilities.utils import feature_changing
 from .utils import F_LIST_TYPE
-
 
 logger = get_logger(__name__)
 
@@ -171,7 +163,6 @@ class ComposedSelector:
 
         n = 0
         while n < (len(candidates) - 1):
-
             partial_corrs = self.precomp_corr.loc[candidates[n], candidates[n + 1 :]]
             big_partial_corrs = partial_corrs[partial_corrs >= pearson_th]
             if len(big_partial_corrs) > 0:

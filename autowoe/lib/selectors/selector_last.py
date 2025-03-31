@@ -1,20 +1,14 @@
 """Post-selection."""
 
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Tuple
-from typing import TypeVar
+from typing import Any, Dict, List, Optional, Tuple, TypeVar
 
 import pandas as pd
 
-from ..utilities.utils import Result
-from ..utilities.utils import TaskType
+from autowoe.lib.utilities.utils import Result, TaskType
+
 from .composed_selector import ComposedSelector
 from .l1 import L1
 from .utils import F_LIST_TYPE
-
 
 __all__ = ["Selector"]
 
@@ -33,6 +27,7 @@ class Selector:
         n_jobs: Number of threads.
         cv_split: Cross-Val splits.
         features_mark_values:
+
     """
 
     def __init__(
@@ -46,7 +41,6 @@ class Selector:
         cv_split: Dict[int, Tuple[List[int], List[int]]],
         features_mark_values: Optional[Dict[str, Tuple[Any]]],
     ):
-
         self.__features_fit = list(features_type.keys())
         self.__pearson_selector = ComposedSelector(train, target, task, features_mark_values)
         self.__main_selector = L1(
@@ -91,11 +85,7 @@ class Selector:
 
         """
         features_fit = self.__pearson_selector(
-            feature_history,
-            self.features_fit,
-            pearson_th=pearson_th,
-            metric_th=metric_th,
-            vif_th=vif_th,
+            feature_history, self.features_fit, pearson_th=pearson_th, metric_th=metric_th, vif_th=vif_th
         )
         features_before = set(features_fit)
         features_fit, result = self.__main_selector(

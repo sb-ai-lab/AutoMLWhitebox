@@ -1,20 +1,11 @@
 """Utility."""
 
 from collections import namedtuple
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import Hashable
-from typing import Iterable
-from typing import Set
-from typing import Tuple
-from typing import Union
+from typing import Any, Callable, Dict, Hashable, Iterable, Set, Tuple, Union
 
 import numpy as np
 import pandas as pd
-
 from strenum import StrEnum
-
 
 Result = namedtuple("Result", ["score", "reg_alpha", "is_neg", "min_weights"])
 
@@ -93,7 +84,7 @@ def feature_changing(
     features_before: Union[Dict[str, str], Set[str]],
     func: Callable,
     *args,
-    **kwargs
+    **kwargs,
 ) -> Tuple[Any, Any]:
     """Safe feature filtering.
 

@@ -1,23 +1,17 @@
 """Additional functional for refitting model."""
 
 from copy import deepcopy
-from typing import Optional
-from typing import Tuple
-from typing import cast
+from typing import Optional, Tuple, cast
 
 import numpy as np
 import sklearn
-
-from scipy import linalg
-from scipy import stats
-from sklearn.linear_model import Lasso
-from sklearn.linear_model import LinearRegression
-from sklearn.linear_model import LogisticRegression
+from scipy import linalg, stats
+from sklearn.linear_model import Lasso, LinearRegression, LogisticRegression
 from sklearn.svm import l1_min_c
 
-from ..logging import get_logger
-from .utils import TaskType
+from autowoe.lib.logging import get_logger
 
+from .utils import TaskType
 
 logger = get_logger(__name__)
 
@@ -69,7 +63,6 @@ def refit_reg(
             return w[neg], i, neg
 
         for w, i in zip(weights[::-1], intercepts[::-1]):
-
             pos = (w > 0).sum()
             if pos > 0:
                 continue
@@ -225,7 +218,7 @@ def calc_p_val(x_train: np.ndarray, weights: np.ndarray, intercept: float) -> Tu
 
     inv_hess = np.linalg.inv(hess)
     b_var = inv_hess.diagonal()
-    w_stat = (coef_ ** 2) / b_var
+    w_stat = (coef_**2) / b_var
 
     p_vals = 1 - stats.chi2(1).cdf(w_stat)
 
@@ -273,11 +266,11 @@ def calc_p_val_reg(
     y_train = np.matrix(y_train).T
 
     # Degrees of freedom.
-    df = float(n - k - 1)
+    freedom_degrees = float(n - k - 1)
 
     # Sample variance.
     sse = np.sum(np.square(y_pred - y_train), axis=0)
-    sampleVariance = sse / df
+    sampleVariance = sse / freedom_degrees
 
     # Sample variance for x.
     sampleVarianceX = x.T * x
@@ -296,6 +289,6 @@ def calc_p_val_reg(
 
     # P-value for each beta. This is a two sided t-test, since the betas can be
     # positive or negative.
-    betasPValue = 1 - stats.t.cdf(abs(betasTStat), df)
+    betasPValue = 1 - stats.t.cdf(abs(betasTStat), freedom_degrees)
 
     return betasPValue, None
