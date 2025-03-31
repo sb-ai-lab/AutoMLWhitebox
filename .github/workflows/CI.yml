@@ -5,12 +5,11 @@ on:
   workflow_dispatch:
 
   push:
-    paths-ignore:
-      - "*.md"
+
 
   pull_request:
-    paths-ignore:
-      - "*.md"
+
+
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
@@ -24,6 +23,17 @@ jobs:
 
       - name: pre-commit
         uses: pre-commit/action@v2.0.3
+
+  codespell:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+
+    - name: codespell
+      uses: codespell-project/actions-codespell@v2
+      run: codespell --skip="*.js,*.csv,*.ipynb,*shaptxt*"
 
   linux-py310-tests:
     needs: pre-commit

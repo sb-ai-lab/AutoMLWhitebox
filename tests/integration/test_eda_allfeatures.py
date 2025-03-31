@@ -10,11 +10,9 @@ from autowoe import AutoWoE
 
 from matplotlib import pyplot as plt
 
-DATA_DIR = "examples/data/"
 
-
-def test_eda_all_features():
-    df = pd.read_csv(DATA_DIR + "train_demo.csv", low_memory=False)
+def test_eda_all_features(train_data):
+    df = train_data
 
     TARGET_NAME = "target"
 

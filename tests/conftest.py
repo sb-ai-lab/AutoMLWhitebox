@@ -36,3 +36,13 @@ def test_data():
 def test_target():
     test_target = pd.read_csv(DATA_DIR + "test-target_demo.csv")["target"]
     return test_target
+
+@pytest.fixture()
+def cat_data():
+    data = pd.read_csv(DATA_DIR + "data_cat.csv")
+    return data
+
+@pytest.fixture()
+def regression_data():
+    data = pd.read_csv(DATA_DIR + "regression_dataset.csv")
+    return data

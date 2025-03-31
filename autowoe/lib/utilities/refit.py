@@ -112,7 +112,7 @@ def refit_simple(
         task: Task.
         x_train: Train features.
         y: Train target.
-        interp: Intepreted model.
+        interp: Interpreted model.
         p_val: P-value.
         x_val: Validation features.
         y_val: Validation target.
@@ -261,7 +261,7 @@ def calc_p_val_reg(
     n, k = x_train.shape
     y_pred = (np.dot(x_train, weights) + intercept).T
 
-    # Change X and Y into numpy matricies. x also has a column of ones added to it.
+    # Change X and Y into numpy matrices. x also has a column of ones added to it.
     x = np.hstack((np.matrix(x_train), np.ones((n, 1))))
     y_train = np.matrix(y_train).T
 
@@ -278,7 +278,7 @@ def calc_p_val_reg(
     # Covariance Matrix = [(s^2)(X'X)^-1]^0.5. (sqrtm = matrix square root.  ugly)
     covarianceMatrix = linalg.sqrtm(sampleVariance[0, 0] * sampleVarianceX.I)
 
-    # Standard erros for the difference coefficients: the diagonal elements of the covariance matrix.
+    # Standard errors for the difference coefficients: the diagonal elements of the covariance matrix.
     se = covarianceMatrix.diagonal()  # [1:]
 
     # T statistic for each beta.

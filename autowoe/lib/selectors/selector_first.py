@@ -99,7 +99,7 @@ def feature_imp_selector(
         imp_th: Importance threshold.
         imp_type: Importance type ("feature_imp" -- feature_importances, "perm_imp" -- permutation_importances).
         select_type: Type of first feature selection.
-            - If `None` then choose feautures with `feature_importance > 0`.
+            - If `None` then choose features with `feature_importance > 0`.
             - If `int` then choose the N-th best features.
         process_num: Number of threads.
 

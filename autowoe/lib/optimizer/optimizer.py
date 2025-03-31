@@ -1,4 +1,4 @@
-"""Optimization of decision tree parameteres."""
+"""Optimization of decision tree parameters."""
 
 from collections import OrderedDict
 from copy import copy

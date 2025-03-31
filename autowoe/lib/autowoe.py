@@ -577,7 +577,7 @@ class AutoWoE:
             metric_tol=self.params["metric_tol"],
         )
 
-        # create validation data if it's defined and usefull
+        # create validation data if it's defined and useful
         valid_enc, valid_target = None, None
         if validation is not None and not self.params["regularized_refit"]:
             valid_enc = self.test_encoding(validation, best_features)

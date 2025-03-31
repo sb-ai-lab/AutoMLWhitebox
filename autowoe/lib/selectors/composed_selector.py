@@ -22,7 +22,7 @@ class ComposedSelector:
 
     Sequential filtering of features by rules:
         1) Unique WoE value.
-        2) Singel feature model has metric lower than threshold.
+        2) Single feature model has metric lower than threshold.
         3) VIF of feature greater than threshold.
         4) There are features with a pair correlation above the threshold.
 

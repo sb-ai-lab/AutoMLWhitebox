@@ -76,9 +76,9 @@ class ReportDeco:
 
     @property
     def __auto_woe(self) -> AutoWoE:
-        logger.warnning(
+        logger.warning(
             """Attribute autowoe should not be explisitly called anymore.
-        Access to autowoe attributes is now avaliable via ReportDeco __getattr__ method""",
+        Access to autowoe attributes is now available via ReportDeco __getattr__ method""",
             DeprecationWarning,
             stacklevel=2,
         )

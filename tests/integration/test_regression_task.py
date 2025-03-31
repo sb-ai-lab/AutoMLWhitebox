@@ -8,9 +8,9 @@ from autowoe import AutoWoE
 DATA_DIR = "examples/data/"
 
 
-def test_regression_task():
+def test_regression_task(regression_data):
 
-    df = pd.read_csv(DATA_DIR + "regression_dataset.csv")
+    df = regression_data
 
     TARGET_NAME = "Target"
 

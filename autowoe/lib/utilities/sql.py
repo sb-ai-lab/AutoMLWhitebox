@@ -20,7 +20,7 @@ def prepare_number(
     """Get encoding case when for number.
 
     Args:
-        woe_dict: Dictonary of WoE values.
+        woe_dict: Dictionary of WoE values.
         name: Name of feature.
         r_val: Numbers after the decimal point.
         round_features: Numbers after the decimal point.
@@ -108,7 +108,7 @@ def prepare_category(
     """Get encoding case when for category.
 
     Args:
-        woe_dict: Dictonary of WoE values.
+        woe_dict: Dictionary of WoE values.
         name: Name of feature.
         r_val: Numbers after the decimal point.
         nan_pattern: Expression for nan processing.
@@ -184,7 +184,7 @@ def prepare_category(
             length = len(search_vals)
             search_vals = list(map(check_cat_symb, search_vals))
 
-            # filter NaN and Small cases separatly
+            # filter NaN and Small cases separately
             enc_val = round(woe_dict.cod_dict[grp], r_val)
             if length > 1:
                 feature += f"""  WHEN {f_val} IN ({", ".join(search_vals)}) THEN {enc_val}\n"""

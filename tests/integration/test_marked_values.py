@@ -8,11 +8,9 @@ from sklearn.metrics import roc_auc_score
 from autowoe import AutoWoE
 
 
-DATA_DIR = "examples/data/"
 
-
-def test_marked_values():
-    df = pd.read_csv(DATA_DIR + "train_demo.csv", low_memory=False)
+def test_marked_values(train_data):
+    df = train_data
 
     TARGET_NAME = "target"
 

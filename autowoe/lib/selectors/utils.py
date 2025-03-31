@@ -107,7 +107,7 @@ def l1_select(
         n_jobs: Number of threads.
         dataset: Tuple of features and target.
         l1_grid_size: Number of points on grid.
-        l1_exp_scale: Maximun value of `C`.
+        l1_exp_scale: Maximum value of `C`.
         cv_split: Cross-Val splits.
         metric_tol: Metric tolerance.
 

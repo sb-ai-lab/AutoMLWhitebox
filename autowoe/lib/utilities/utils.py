@@ -21,7 +21,7 @@ def drop_keys(dict_: Dict, keys: Iterable[Hashable]) -> Dict:
     """Drop multiple keys from dict.
 
     Args:
-        dict_: Dictonary.
+        dict_: Dictionary.
         keys: Dropped keys.
 
     Returns:
@@ -34,15 +34,15 @@ def drop_keys(dict_: Dict, keys: Iterable[Hashable]) -> Dict:
 
 
 def flatten(d: dict, parent_key: str = "", sep: str = "_"):
-    """Flatten dictonary of dictonaries.
+    """Flatten Dictionary of dictionaries.
 
     Args:
-        d: Dictonary with nested dictonaries.
+        d: Dictionary with nested dictionaries.
         parent_key: Parent outer key.
         sep: Separator for merged keys.
 
     Returns:
-        Expanded dictonary.
+        Expanded Dictionary.
 
     """
     items = []

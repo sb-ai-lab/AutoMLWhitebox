@@ -1,4 +1,3 @@
-import pandas as pd
 import time
 import numpy as np
 
@@ -6,10 +5,8 @@ from sklearn.metrics import roc_auc_score
 
 from autowoe import ReportDeco, AutoWoE
 
-DATA_DIR = "examples/data/"
 
-
-def test_basic_usage_and_params(train_data):
+def test_basic_usage_and_params(train_data, test_data, test_target):
 
     train = train_data
 
@@ -24,9 +21,7 @@ def test_basic_usage_and_params(train_data):
         train[col + "_weekday"] = train[col].map(lambda x: x.weekday())
         train[col + "_month"] = train[col].map(lambda x: x.month)
 
-    test = pd.read_csv(
-        DATA_DIR + "test_demo.csv", index_col="line_id", parse_dates=["datetime_" + str(i) for i in range(2)]
-    )
+    test = test_data
 
     date_col = filter(lambda x: "datetime" in x, test.columns)
     for col in date_col:
@@ -34,7 +29,6 @@ def test_basic_usage_and_params(train_data):
         test[col + "_weekday"] = test[col].map(lambda x: x.weekday())
         test[col + "_month"] = test[col].map(lambda x: x.month)
 
-    test_target = pd.read_csv(DATA_DIR + "test-target_demo.csv")["target"]
     test["target"] = test_target.values
 
     cat_col = list(filter(lambda x: "str" in x, train.columns))

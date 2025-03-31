@@ -1,16 +1,13 @@
-import pandas as pd
 import time
 
 from sklearn.metrics import roc_auc_score
 
 from autowoe import ReportDeco, AutoWoE
 
-DATA_DIR = "examples/data/"
 
+def test_autotyping(cat_data):
 
-def test_autotyping():
-
-    data = pd.read_csv(DATA_DIR + "data_cat.csv")
+    data = cat_data
 
     train = data.iloc[:14000, :]
     test = data.iloc[14000:, :]
