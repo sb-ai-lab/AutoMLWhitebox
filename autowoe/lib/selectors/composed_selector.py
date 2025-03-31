@@ -167,12 +167,11 @@ class ComposedSelector:
             big_partial_corrs = partial_corrs[partial_corrs >= pearson_th]
             if len(big_partial_corrs) > 0:
                 logger.info(
-                    "Features {0}: metric = {1} was removed due to corr = {2} with feat {3}: metric = {4}".format(
-                        list(big_partial_corrs.index.values),
-                        list(self.precomp_metrics[big_partial_corrs.index]),
-                        list(big_partial_corrs.values),
-                        candidates[n],
-                        self.precomp_metrics[candidates[n]],
+                    (
+                        f"Features {list(big_partial_corrs.index.values)}: "
+                        f"metric = {list(self.precomp_metrics[big_partial_corrs.index])} was removed due to "
+                        f"corr = {list(big_partial_corrs.values)} with feat {candidates[n]}: "
+                        f"metric = {self.precomp_metrics[candidates[n]]}"
                     )
                 )
                 if feature_history is not None:

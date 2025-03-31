@@ -269,9 +269,7 @@ class AutoWoE:
             if deprecated_arg in kwargs:
                 msg = f"Parameter {deprecated_arg} is deprecated."
                 if new_arg is not None:
-                    msg = msg + " Value will be set to {0} parameter, but exception will be raised in future.".format(
-                        new_arg
-                    )
+                    msg = msg + f" Value will be set to {new_arg} parameter, but exception will be raised in future."
                     self._params[new_arg] = kwargs[deprecated_arg]
                 logger.warning(msg, DeprecationWarning)
 

@@ -23,13 +23,11 @@ target-version = "py38"
 
 [lint]
 select = [
-    "S", "B", "A",
-    "PLR0912",
+    "S", "B", "A", "D", "F", "E", "N", "I", "PD", "PERF",
     "UP032",
     "PERF401",
-    "D",
     "TID252",
-     "C4", "F", "E", "N", "I", "PD", "PERF", ]
+    "C4"]
 ignore = [
     "D203",
     "D213",
@@ -44,9 +42,7 @@ ignore = [
     "N806",
     "D401",
     "B904",
-
-    "UP032", # Delete after flynt merge
-    "PLR0912", # TODO: Fix branching
+    "PLR0912"
     ]
 
 fixable = ["ALL"]
