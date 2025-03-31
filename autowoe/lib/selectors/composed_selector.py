@@ -109,7 +109,7 @@ class ComposedSelector:
                     if self.__compare_msg(
                         lambda x: ~np.isnan(self.precomp_corr.loc[x, x]),
                         col,
-                        "Feature {0} removed due to single WOE value".format(col),
+                        f"Feature {col} removed due to single WOE value",
                     )
                 ],
             ),  # func
@@ -130,7 +130,7 @@ class ComposedSelector:
                     if self.__compare_msg(
                         lambda x: self.precomp_metrics[x] >= metric_th,
                         col,
-                        "Feature {0} removed due to low metric value {1}".format(col, self.precomp_metrics[col]),
+                        f"Feature {col} removed due to low metric value {self.precomp_metrics[col]}",
                     )
                 ],
             ),  # func
@@ -151,7 +151,7 @@ class ComposedSelector:
             max_vif = vifs[max_vif_idx]
 
             if max_vif >= vif_th:
-                logger.info("Feature {0} removed due to high VIF value = {1}".format(candidates[max_vif_idx], max_vif))
+                logger.info(f"Feature {candidates[max_vif_idx]} removed due to high VIF value = {max_vif}")
                 if feature_history is not None:
                     feature_history[candidates[max_vif_idx]] = f"High VIF value = {round(max_vif, 2)}"
                 candidates = [x for (n, x) in enumerate(candidates) if n != max_vif_idx]

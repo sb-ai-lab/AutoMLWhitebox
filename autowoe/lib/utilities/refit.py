@@ -132,7 +132,7 @@ def refit_simple(
         n += 1
         assert sl_ok.sum() > 0, "No features left to fit on iter"
 
-        logger.info("Iter {0} of final refit starts with {1} features".format(n, sl_ok.sum()))
+        logger.info(f"Iter {n} of final refit starts with {sl_ok.sum()} features")
 
         x_train_ = x_train[:, sl_ok]
         # индексы в исходном массиве

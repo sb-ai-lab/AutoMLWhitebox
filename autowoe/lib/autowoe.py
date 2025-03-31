@@ -216,15 +216,15 @@ class AutoWoE:
         logger.setLevel(verbosity_to_loglevel(verbose))
 
         assert nan_merge_to in DEFAULT_OPTIONS_SPECIAL_VALUES, (
-            "Value for nan_merge_to is invalid. Valid are [{}]".format(DEFAULT_OPTIONS_SPECIAL_VALUES)
+            f"Value for nan_merge_to is invalid. Valid are [{DEFAULT_OPTIONS_SPECIAL_VALUES}]"
         )
 
         assert cat_merge_to in EXTEND_OPTIONS_SPECIAL_VALUES, (
-            "Value for cat_merge_to is invalid. Valid are [{}]".format(EXTEND_OPTIONS_SPECIAL_VALUES)
+            f"Value for cat_merge_to is invalid. Valid are [{EXTEND_OPTIONS_SPECIAL_VALUES}]"
         )
 
         assert mark_merge_to in EXTEND_OPTIONS_SPECIAL_VALUES, (
-            "Value for mari_merge_to is invalid. Valid are [{}]".format(EXTEND_OPTIONS_SPECIAL_VALUES)
+            f"Value for mari_merge_to is invalid. Valid are [{EXTEND_OPTIONS_SPECIAL_VALUES}]"
         )
 
         self._params = {
@@ -267,7 +267,7 @@ class AutoWoE:
             ["l1_grid_size", "l1_exp_scale", None, None, "metric_th", "metric_tol"],
         ):
             if deprecated_arg in kwargs:
-                msg = "Parameter {0} is deprecated.".format(deprecated_arg)
+                msg = f"Parameter {deprecated_arg} is deprecated."
                 if new_arg is not None:
                     msg = msg + " Value will be set to {0} parameter, but exception will be raised in future.".format(
                         new_arg
@@ -322,7 +322,7 @@ class AutoWoE:
 
             borders, values = list(zip(*split))
             new_borders = list(zip([-np.inf] + list(borders[:-1]), borders))
-            new_borders = [("{:.2f}".format(x[0]), "{:.2f}".format(x[1])) for x in new_borders]
+            new_borders = [(f"{x[0]:.2f}", f"{x[1]:.2f}") for x in new_borders]
 
             split = list(zip(new_borders, values)) + spec_val
 
@@ -598,7 +598,7 @@ class AutoWoE:
 
         for p in [("features_fit", False), ("weights", True), ("intercept", True), ("b_vars", True), ("p_vals", True)]:
             nm, is_private = p
-            attr_name = "{}{}".format("_" * is_private, nm)
+            attr_name = f"{'_' * is_private}{nm}"
             if nm in fit_result:
                 setattr(self, attr_name, fit_result[nm])
 
@@ -643,7 +643,7 @@ class AutoWoE:
             if self._features_mark_values is not None and feature_name in self._features_mark_values:
                 if self.private_features_type[feature_name] != "cat":
                     sn_set.remove("__Mark__")
-                sn_set = sn_set.union({"__Mark__{}__".format(val) for val in self._features_mark_values[feature_name]})
+                sn_set = sn_set.union({f"__Mark__{val}__" for val in self._features_mark_values[feature_name]})
 
             nan_index = train_df[feature_name].isin(sn_set)
             nan_index = np.where(nan_index.values)[0]

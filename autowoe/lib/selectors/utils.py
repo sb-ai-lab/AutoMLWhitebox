@@ -122,7 +122,7 @@ def l1_select(
         cs = l1_min_c(dataset[0], dataset[1], loss="log", fit_intercept=True) * np.logspace(
             0, l1_exp_scale, l1_grid_size
         )
-        logger.info("C parameter range in [{0}:{1}], {2} values".format(cs[0], cs[-1], l1_grid_size))
+        logger.info(f"C parameter range in [{cs[0]}:{cs[-1]}], {l1_grid_size} values")
 
         model = LogisticRegressionCV(
             Cs=cs,
@@ -140,7 +140,7 @@ def l1_select(
         # get grid for cs
         cs = np.logspace(0, l1_exp_scale, l1_grid_size + 1)
         alphas = 1.0 / cs[1:][::-1]
-        logger.info("Alphas parameter range in [{0}:{1}], {2} values".format(alphas[0], alphas[-1], l1_grid_size))
+        logger.info(f"Alphas parameter range in [{alphas[0]}:{alphas[-1]}], {l1_grid_size} values")
 
         model = LassoCV(
             alphas=alphas, cv=cv, positive=interpreted_model, tol=1e-5, max_iter=1000, n_jobs=n_jobs, random_state=42

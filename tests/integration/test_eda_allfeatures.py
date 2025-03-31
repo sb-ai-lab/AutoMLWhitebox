@@ -96,7 +96,7 @@ def test_eda_all_features():
             woe_val["bin"] = woe_val[col]
         else:
             split = list(woe.split.astype(np.float32))
-            mapper = {n: "({0}; {1}]".format(x, y) for (n, (x, y)) in enumerate(zip(["-inf"] + split, split + ["inf"]))}
+            mapper = {n: f"({x}; {y}]" for (n, (x, y)) in enumerate(zip(["-inf"] + split, split + ["inf"]))}
             woe_val["bin"] = woe_val[col].map(mapper)
             woe_val["bin"] = np.where(woe_val["bin"].isnull().values, woe_val[col], woe_val["bin"])
 
