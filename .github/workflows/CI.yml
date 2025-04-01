@@ -32,8 +32,9 @@ jobs:
       uses: actions/checkout@v4
 
     - name: codespell
-      uses: codespell-project/actions-codespell@v2
-      run: codespell --skip="*.js,*.csv,*.ipynb,*shaptxt*"
+      run: |
+        pip install codespell
+        codespell --skip="*.js,*.csv,*.ipynb,*shaptxt*"
 
   linux-py310-tests:
     needs: pre-commit
