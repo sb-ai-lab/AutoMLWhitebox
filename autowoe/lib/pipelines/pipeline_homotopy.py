@@ -3,11 +3,9 @@
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
-
 from sklearn.model_selection import StratifiedKFold
 
-from autowoe.lib.utilities.utils import TaskType
-from autowoe.lib.utilities.utils import flatten
+from autowoe.lib.utilities.utils import TaskType, flatten
 
 
 class HTransform:
@@ -50,7 +48,7 @@ class HTransform:
             "verbosity": -1,
         }
 
-        unite_params = {**default_tree_params, **tree_params, **{"num_threads": 1}}
+        unite_params = {**default_tree_params, **tree_params, "num_threads": 1}
         lgb_train = lgb.Dataset(self.x.values.astype(np.float32)[:, np.newaxis], label=self.y)
         gbm = lgb.train(params=unite_params, train_set=lgb_train, num_boost_round=1)
 

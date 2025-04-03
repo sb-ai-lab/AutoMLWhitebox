@@ -34,7 +34,7 @@ def plot_roc_curve_image(y_true, y_pred, path):
         tpr_reg,
         color="darkorange",
         lw=lw,
-        label="WhiteBox модель (GINI = {:.3f})".format(2 * auc_score_reg - 1),
+        label=f"WhiteBox модель (GINI = {(2 * auc_score_reg - 1):.3f})",
     )
     plt.plot([0, 1], [0, 1], color="red", lw=lw, linestyle="--", label="Random Model")
     plt.xlim([-0.05, 1.05])
@@ -45,7 +45,7 @@ def plot_roc_curve_image(y_true, y_pred, path):
     plt.xticks(np.arange(0, 1.01, 0.05), rotation=45)
     plt.yticks(np.arange(0, 1.01, 0.05))
     plt.grid(color="gray", linestyle="-", linewidth=1)
-    plt.title("ROC кривая (GINI = {:.3f})".format(2 * auc_score_reg - 1))
+    plt.title(f"ROC кривая (GINI = {(2 * auc_score_reg - 1):.3f})")
     plt.savefig(path, bbox_extra_artists=(lgd,), bbox_inches="tight")
     plt.close()
 
@@ -65,14 +65,14 @@ def plot_double_roc_curve(train_y_true, train_y_pred, test_y_true, test_y_pred, 
         train_tpr_reg,
         color="darkorange",
         lw=lw,
-        label="По данным train (GINI = {:.3f})".format(2 * train_auc_score_reg - 1),
+        label=f"По данным train (GINI = {(2 * train_auc_score_reg - 1):.3f})",
     )
     plt.plot(
         test_fpr_reg,
         test_tpr_reg,
         color="blue",
         lw=lw,
-        label="По данным test (GINI = {:.3f})".format(2 * test_auc_score_reg - 1),
+        label=f"По данным test (GINI = {(2 * test_auc_score_reg - 1):.3f})",
     )
     plt.plot([0, 1], [0, 1], color="red", lw=lw, linestyle="--", label="Random Model")
     plt.xlim([-0.05, 1.05])
@@ -101,7 +101,7 @@ def plot_roc_curve_feature_image(feature_name, y_true, y_pred, path):
         tpr_reg,
         color="darkorange",
         lw=lw,
-        label=feature_name + " (GINI = {:.3f})".format(2 * auc_score_reg - 1),
+        label=feature_name + f" (GINI = {(2 * auc_score_reg - 1):.3f})",
     )
     plt.plot([0, 1], [0, 1], color="red", lw=lw, linestyle="--", label="Random Model")
     plt.xlim([-0.05, 1.05])
@@ -112,7 +112,7 @@ def plot_roc_curve_feature_image(feature_name, y_true, y_pred, path):
     plt.xticks(np.arange(0, 1.01, 0.05), rotation=45)
     plt.yticks(np.arange(0, 1.01, 0.05))
     plt.grid(color="gray", linestyle="-", linewidth=1)
-    plt.title("ROC curve(GINI = {:.3f})".format(2 * auc_score_reg - 1) + f" of feature {feature_name}")
+    plt.title(f"ROC curve(GINI = {(2 * auc_score_reg - 1):.3f})" + f" of feature {feature_name}")
     plt.savefig(path, bbox_extra_artists=(lgd,), bbox_inches="tight")
     plt.close()
 
