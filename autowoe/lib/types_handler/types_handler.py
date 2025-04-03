@@ -1,18 +1,12 @@
 """Type processing."""
 
 import collections
-
 from copy import deepcopy
-from typing import Any
-from typing import Dict
-from typing import Hashable
-from typing import Optional
+from typing import Any, Dict, Hashable, Optional
 
 import pandas as pd
 
-from .features_checkers_handlers import cat_checker
-from .features_checkers_handlers import dates_checker
-from .features_checkers_handlers import dates_handler
+from .features_checkers_handlers import cat_checker, dates_checker, dates_handler
 
 
 class TypesHandler:
@@ -42,13 +36,13 @@ class TypesHandler:
         self,
         train: pd.DataFrame,
         public_features_type: Dict[Hashable, Any],
-        max_bin_count: Dict[Hashable, Optional[int]] = None,
+        max_bin_count: Optional[Dict[Hashable, Optional[int]]] = None,
         features_monotone_constraints: Optional[dict] = None,
         features_mark_values: Optional[dict] = None,
     ):
         self.__train = deepcopy(train)
         self.__public_features_type = deepcopy(public_features_type)
-        self.__private_features_type: Dict[str, Any] = dict()
+        self.__private_features_type: Dict[str, Any] = {}
 
         if max_bin_count is None:
             max_bin_count = {}

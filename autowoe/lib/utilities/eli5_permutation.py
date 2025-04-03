@@ -1,6 +1,6 @@
 # module was taken from eli5 lib as is
 # this was made to simplify dependencies
-# flake8: noqa
+# ruff: noqa
 
 """ELI5 library.
 
@@ -84,6 +84,7 @@ def get_score_importances(
     If you just want feature importances, you can take a mean of the result::
         import numpy as np
         from eli5.permutation_importance import get_score_importances
+
         base_score, score_decreases = get_score_importances(score_func, X, y)
         feature_importances = np.mean(score_decreases, axis=0)
 

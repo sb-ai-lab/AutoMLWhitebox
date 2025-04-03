@@ -1,4 +1,4 @@
-# flake8: noqa
+# ruff: noqa
 
 import os
 
@@ -82,4 +82,4 @@ class ReportGenerator:
 
         self.write_report_to_file(report_params)
 
-        logger.info("Successfully wrote {}.".format(os.path.join(report_params["output_path"], "autowoe_report.html")))
+        logger.info(f"Successfully wrote {os.path.join(report_params['output_path'], 'autowoe_report.html')}.")

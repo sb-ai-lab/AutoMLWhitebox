@@ -1,30 +1,19 @@
 """Selection of features according to the importance of the model."""
 
 import logging
-
 from copy import deepcopy
-from typing import Any
-from typing import Dict
-from typing import Hashable
-from typing import Optional
-from typing import Tuple
-from typing import Union
+from typing import Any, Dict, Hashable, Optional, Tuple, Union
 
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
-
 from pandas import DataFrame
-from sklearn.metrics import mean_squared_error
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import mean_squared_error, roc_auc_score
 from sklearn.model_selection import train_test_split
 
+from autowoe.lib.logging import get_logger
 from autowoe.lib.utilities.eli5_permutation import get_score_importances
-
-from ..logging import get_logger
-from ..utilities.utils import TaskType
-from ..utilities.utils import drop_keys
-
+from autowoe.lib.utilities.utils import TaskType, drop_keys
 
 pd.options.mode.chained_assignment = None
 
@@ -42,7 +31,7 @@ else:
 
 
 def nan_constant_selector(
-    data: DataFrame, features_type: Dict[Hashable, str], th_const: Union[int, float] = 32
+    data: DataFrame, features_type: Dict[Hashable, str], th_const: float = 32
 ) -> Tuple[DataFrame, Dict[Hashable, str]]:
     """Selector NaN / Const columns.
 
@@ -71,7 +60,7 @@ def nan_constant_selector(
                 features_to_drop.append(col)
 
     logger.info(f" features {features_to_drop} contain too many nans or identical values")
-    data.drop(columns=features_to_drop, axis=1, inplace=True)
+    data = data.drop(columns=features_to_drop, axis=1)
     features_type = drop_keys(features_type, features_to_drop)
     return data, features_type
 
@@ -110,7 +99,7 @@ def feature_imp_selector(
         imp_th: Importance threshold.
         imp_type: Importance type ("feature_imp" -- feature_importances, "perm_imp" -- permutation_importances).
         select_type: Type of first feature selection.
-            - If `None` then choose feautures with `feature_importance > 0`.
+            - If `None` then choose features with `feature_importance > 0`.
             - If `int` then choose the N-th best features.
         process_num: Number of threads.
 
@@ -129,12 +118,7 @@ def feature_imp_selector(
         data_[categorical_feature] = data_[categorical_feature].astype("category")
 
     train, test = train_test_split(data_, test_size=0.2, random_state=42)
-    params = {
-        "boosting_type": "gbdt",
-        "n_jobs": process_num,
-        "bagging_seed": 323,
-        "min_gain_to_split": 0.01,
-    }
+    params = {"boosting_type": "gbdt", "n_jobs": process_num, "bagging_seed": 323, "min_gain_to_split": 0.01}
 
     if task == TaskType.BIN:
         params["objective"] = "binary"
@@ -153,24 +137,14 @@ def feature_imp_selector(
             data=test.drop(target_name, axis=1), label=test[target_name], categorical_feature=categorical_feature
         )
 
-        lgb_kwargs = {
-            "params": params,
-            "train_set": lgb_train,
-            "valid_sets": [lgb_test],
-            "valid_names": ["val_test"],
-        }
+        lgb_kwargs = {"params": params, "train_set": lgb_train, "valid_sets": [lgb_test], "valid_names": ["val_test"]}
         if lgb.__version__ >= "3.3.0":
-            lgb_kwargs["callbacks"] = [
-                lgb.log_evaluation(period=verbose_eval),
-                lgb.early_stopping(10, False, True),
-            ]
+            lgb_kwargs["callbacks"] = [lgb.log_evaluation(period=verbose_eval), lgb.early_stopping(10, False, True)]
         else:
             lgb_kwargs["early_stopping_rounds"] = 10
             lgb_kwargs["verbose_eval"] = verbose_eval
 
-        model = lgb.train(
-            **lgb_kwargs,
-        )
+        model = lgb.train(**lgb_kwargs)
         imp_dict = dict(zip(train.drop(target_name, axis=1).columns, model.feature_importance()))
     elif imp_type == "perm_imp":
         if task == TaskType.BIN:
@@ -214,6 +188,6 @@ def feature_imp_selector(
     else:
         raise ValueError("select_type is None or int > 0")
     logger.info(f" features {features_to_drop} have low importance")
-    data.drop(columns=features_to_drop, axis=1, inplace=True)
+    data = data.drop(columns=features_to_drop, axis=1)
     features_type = drop_keys(features_type, features_to_drop)
     return data, features_type

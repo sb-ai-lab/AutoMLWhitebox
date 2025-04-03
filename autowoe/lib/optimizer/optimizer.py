@@ -1,14 +1,9 @@
-"""Optimization of decision tree parameteres."""
+"""Optimization of decision tree parameters."""
 
 from collections import OrderedDict
 from copy import copy
 from itertools import product
-from typing import Any
-from typing import Dict
-from typing import Iterable
-from typing import List
-from typing import Tuple
-from typing import Union
+from typing import Any, Dict, Iterable, List, Tuple, Union
 
 import lightgbm as lgb
 import numpy as np
@@ -16,7 +11,6 @@ import pandas as pd
 
 from autowoe.lib.utilities.cv_split_f import cv_split_f
 from autowoe.lib.utilities.utils import TaskType
-
 
 # TODO: Do we need random state here?
 np.random.seed(232)
@@ -63,7 +57,7 @@ class TreeParamOptimizer:
 
         # return skf.items()
 
-        for _, v in skf.items():
+        for v in skf.values():
             yield v
 
     @property
@@ -104,7 +98,7 @@ class TreeParamOptimizer:
             cv_results = lgb.cv(
                 params=unite_params, train_set=self._lgb_train, num_boost_round=1, folds=folds, metrics=self._metric
             )
-            scores.append(cv_results[score_add_string + "{}-mean".format(self._cv_metric_map[self._metric])])
+            scores.append(cv_results[score_add_string + f"{self._cv_metric_map[self._metric]}-mean"])
 
         return scores
 

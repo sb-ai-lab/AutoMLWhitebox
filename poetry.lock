@@ -577,7 +577,7 @@ python-versions = "*"
 [[package]]
 name = "jupyter-latex-envs"
 version = "1.4.6"
-description = "Jupyter notebook extension which supports (some) LaTeX environments within markdown cells. Also provides support for labels and crossreferences, document wide numbering, bibliography, and more..."
+description = "Jupyter notebook extension which supports (some) LaTeX environments within markdown cells. Also provides support for labels and cross-references, document wide numbering, bibliography, and more..."
 category = "dev"
 optional = false
 python-versions = "*"
