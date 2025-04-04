@@ -49,4 +49,4 @@ jobs:
 
       - name: test with tox
         run: |
-          tox -- -v
+          tox -- -vv
