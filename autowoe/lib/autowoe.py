@@ -1,18 +1,10 @@
 """AutoWoe."""
 
 import collections
-
 from collections import OrderedDict
 from copy import deepcopy
 from multiprocessing import Pool
-from typing import Any
-from typing import Dict
-from typing import Hashable
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
+from typing import Any, Dict, Hashable, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -22,28 +14,24 @@ from sklearn.metrics import roc_auc_score
 from sklearn.preprocessing import StandardScaler
 
 from .cat_encoding.cat_encoding import CatEncoding
-from .logging import get_logger
-from .logging import verbosity_to_loglevel
+from .logging import get_logger, verbosity_to_loglevel
 from .optimizer.optimizer import TreeParamOptimizer
-from .pipelines.pipeline_feature_special_values import CATEGORY_SPECIAL_SET
-from .pipelines.pipeline_feature_special_values import DEFAULT_OPTIONS_SPECIAL_VALUES
-from .pipelines.pipeline_feature_special_values import EXTEND_OPTIONS_SPECIAL_VALUES
-from .pipelines.pipeline_feature_special_values import REAL_SPECIAL_SET
-from .pipelines.pipeline_feature_special_values import FeatureSpecialValues
+from .pipelines.pipeline_feature_special_values import (
+    CATEGORY_SPECIAL_SET,
+    DEFAULT_OPTIONS_SPECIAL_VALUES,
+    EXTEND_OPTIONS_SPECIAL_VALUES,
+    REAL_SPECIAL_SET,
+    FeatureSpecialValues,
+)
 from .pipelines.pipeline_homotopy import HTransform
-from .selectors.selector_first import feature_imp_selector
-from .selectors.selector_first import nan_constant_selector
+from .selectors.selector_first import feature_imp_selector, nan_constant_selector
 from .selectors.selector_last import Selector
 from .types_handler.types_handler import TypesHandler
 from .utilities.cv_split_f import cv_split_f
-from .utilities.refit import refit_reg
-from .utilities.refit import refit_simple
+from .utilities.refit import refit_reg, refit_simple
 from .utilities.sql import get_sql_inference_query
-from .utilities.utils import TaskType
-from .utilities.utils import feature_changing
-from .utilities.utils import get_task_type
+from .utilities.utils import TaskType, feature_changing, get_task_type
 from .woe.woe import WoE
-
 
 logger = get_logger(__name__)
 
@@ -199,13 +187,13 @@ class AutoWoE:
         metric_th: Optional[float] = None,
         vif_th: float = 5.0,
         imp_th: float = 0.001,
-        th_const: Union[int, float] = 0.005,
+        th_const: float = 0.005,
         force_single_split: bool = False,
-        th_nan: Union[int, float] = 0.005,
-        th_cat: Union[int, float] = 0.005,
-        th_mark: Union[int, float] = 0.005,
+        th_nan: float = 0.005,
+        th_cat: float = 0.005,
+        th_mark: float = 0.005,
         woe_diff_th: float = 0.01,
-        min_bin_size: Union[int, float] = 0.01,
+        min_bin_size: float = 0.01,
         min_bin_mults: Sequence[float] = (2, 4),
         min_gains_to_split: Sequence[float] = (0.0, 0.5, 1.0),
         metric_tol: float = 1e-4,
@@ -227,17 +215,17 @@ class AutoWoE:
     ):
         logger.setLevel(verbosity_to_loglevel(verbose))
 
-        assert (
-            nan_merge_to in DEFAULT_OPTIONS_SPECIAL_VALUES
-        ), "Value for nan_merge_to is invalid. Valid are [{}]".format(DEFAULT_OPTIONS_SPECIAL_VALUES)
+        assert nan_merge_to in DEFAULT_OPTIONS_SPECIAL_VALUES, (
+            f"Value for nan_merge_to is invalid. Valid are [{DEFAULT_OPTIONS_SPECIAL_VALUES}]"
+        )
 
-        assert (
-            cat_merge_to in EXTEND_OPTIONS_SPECIAL_VALUES
-        ), "Value for cat_merge_to is invalid. Valid are [{}]".format(EXTEND_OPTIONS_SPECIAL_VALUES)
+        assert cat_merge_to in EXTEND_OPTIONS_SPECIAL_VALUES, (
+            f"Value for cat_merge_to is invalid. Valid are [{EXTEND_OPTIONS_SPECIAL_VALUES}]"
+        )
 
-        assert (
-            mark_merge_to in EXTEND_OPTIONS_SPECIAL_VALUES
-        ), "Value for mari_merge_to is invalid. Valid are [{}]".format(EXTEND_OPTIONS_SPECIAL_VALUES)
+        assert mark_merge_to in EXTEND_OPTIONS_SPECIAL_VALUES, (
+            f"Value for mari_merge_to is invalid. Valid are [{EXTEND_OPTIONS_SPECIAL_VALUES}]"
+        )
 
         self._params = {
             "task": task,
@@ -279,11 +267,9 @@ class AutoWoE:
             ["l1_grid_size", "l1_exp_scale", None, None, "metric_th", "metric_tol"],
         ):
             if deprecated_arg in kwargs:
-                msg = "Parameter {0} is deprecated.".format(deprecated_arg)
+                msg = f"Parameter {deprecated_arg} is deprecated."
                 if new_arg is not None:
-                    msg = msg + " Value will be set to {0} parameter, but exception will be raised in future.".format(
-                        new_arg
-                    )
+                    msg = msg + f" Value will be set to {new_arg} parameter, but exception will be raised in future."
                     self._params[new_arg] = kwargs[deprecated_arg]
                 logger.warning(msg, DeprecationWarning)
 
@@ -334,7 +320,7 @@ class AutoWoE:
 
             borders, values = list(zip(*split))
             new_borders = list(zip([-np.inf] + list(borders[:-1]), borders))
-            new_borders = [("{:.2f}".format(x[0]), "{:.2f}".format(x[1])) for x in new_borders]
+            new_borders = [(f"{x[0]:.2f}", f"{x[1]:.2f}") for x in new_borders]
 
             split = list(zip(new_borders, values)) + spec_val
 
@@ -366,11 +352,8 @@ class AutoWoE:
             val = self.params[k]
             self.params[k] = int(val * train.shape[0]) if 0 <= val < 1 else int(val)
 
-        min_data_in_bin = [
-            self.params["min_bin_size"],
-        ]
-        for m in self.params["min_bin_mults"]:
-            min_data_in_bin.append(int(m * self.params["min_bin_size"]))
+        min_data_in_bin = [self.params["min_bin_size"]]
+        min_data_in_bin.extend([int(m * self.params["min_bin_size"]) for m in self.params["min_bin_mults"]])
 
         self._tree_dict_opt = OrderedDict(
             {
@@ -489,7 +472,7 @@ class AutoWoE:
 
         train_ = train_[[*self.private_features_type.keys(), target_name]]
         self.target = train_[target_name]
-        self.feature_history = {key: None for key in self.private_features_type.keys()}
+        self.feature_history = dict.fromkeys(self.private_features_type, None)
 
         # Remove columns with huge ratio of NaN-values
         train_, self._private_features_type = feature_changing(
@@ -594,7 +577,7 @@ class AutoWoE:
             metric_tol=self.params["metric_tol"],
         )
 
-        # create validation data if it's defined and usefull
+        # create validation data if it's defined and useful
         valid_enc, valid_target = None, None
         if validation is not None and not self.params["regularized_refit"]:
             valid_enc = self.test_encoding(validation, best_features)
@@ -613,7 +596,7 @@ class AutoWoE:
 
         for p in [("features_fit", False), ("weights", True), ("intercept", True), ("b_vars", True), ("p_vals", True)]:
             nm, is_private = p
-            attr_name = "{}{}".format("_" * is_private, nm)
+            attr_name = f"{'_' * is_private}{nm}"
             if nm in fit_result:
                 setattr(self, attr_name, fit_result[nm])
 
@@ -658,7 +641,7 @@ class AutoWoE:
             if self._features_mark_values is not None and feature_name in self._features_mark_values:
                 if self.private_features_type[feature_name] != "cat":
                     sn_set.remove("__Mark__")
-                sn_set = sn_set.union({"__Mark__{}__".format(val) for val in self._features_mark_values[feature_name]})
+                sn_set = sn_set.union({f"__Mark__{val}__" for val in self._features_mark_values[feature_name]})
 
             nan_index = train_df[feature_name].isin(sn_set)
             nan_index = np.where(nan_index.values)[0]
@@ -687,13 +670,9 @@ class AutoWoE:
         # подбор оптимальных параметров дерева
         tree_dict_opt = deepcopy(self._tree_dict_opt)
         if max_bin_count:  # ограничение на число бинов
-
             leaves_range = tuple(range(2, max_bin_count + 1))
             tree_dict_opt = OrderedDict(
-                {
-                    **self._tree_dict_opt,
-                    **{"num_leaves": leaves_range, "bin_construct_sample_cnt": (int(1e8),)},
-                }
+                {**self._tree_dict_opt, "num_leaves": leaves_range, "bin_construct_sample_cnt": (int(1e8),)}
             )
 
             # Еще фича force_single_split ..
@@ -709,7 +688,7 @@ class AutoWoE:
             task=task,
             n_folds=self.params["n_folds"],
             params_range=collections.OrderedDict(
-                **tree_dict_opt, **{"monotone_constraints": (features_monotone_constraints,)}
+                **tree_dict_opt, monotone_constraints=(features_monotone_constraints,)
             ),
         )
         tree_param = tree_opt(3)
@@ -726,6 +705,7 @@ class AutoWoE:
         else:
             raise ValueError("self.features_type[feature] is cat or real")
 
+    @staticmethod
     def _get_task_type(values: np.ndarray) -> TaskType:
         n_unique_values = np.unique(values).shape[0]
         if n_unique_values == 1:
@@ -747,7 +727,7 @@ class AutoWoE:
 
     def _train_encoding(self, train: pd.DataFrame, spec_values: Dict, folds_codding: bool) -> pd.DataFrame:  # TODO: ref
         """Encode a train dataset based on WoE estimates."""
-        woe_dict = dict()
+        woe_dict = {}
         woe_list = []
         for feature in self.private_features_type:
             woe = WoE(
@@ -776,7 +756,7 @@ class AutoWoE:
         x_val, y_val = None, None
         p_vals = None
 
-        result = dict()
+        result = {}
         if self.params["regularized_refit"]:
             w, i, interp_feat_flag = refit_reg(
                 self.params["task"],
@@ -923,9 +903,9 @@ class AutoWoE:
 
         """
         features = list(self.features_fit.index)
-        result = dict()
+        result = {}
         for feature in features:
-            feature_data = dict()
+            feature_data = {}
             woe = self.woe_dict[feature]
             feature_data["f_type"] = woe.f_type
 

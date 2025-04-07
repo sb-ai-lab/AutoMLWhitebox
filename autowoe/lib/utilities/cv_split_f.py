@@ -1,17 +1,16 @@
 """Cross validation utilities."""
 
-from typing import Iterable
-from typing import Optional
+from typing import Iterable, Optional
 
 import numpy as np
-
-from sklearn.model_selection import GroupKFold
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import GroupKFold, StratifiedKFold
 
 from autowoe.lib.utilities.utils import TaskType
 
 
-def cv_split_f(x, y, task: TaskType, group_kf: Iterable = None, n_splits: int = 6, random_state: int = 42) -> dict:
+def cv_split_f(
+    x, y, task: TaskType, group_kf: Optional[Iterable] = None, n_splits: int = 6, random_state: int = 42
+) -> dict:
     """Get CV-splits.
 
     Args:
@@ -75,9 +74,7 @@ class StratifiedKFoldReg(StratifiedKFold):
         rand_label_ix = np.random.choice(labels_idx, mod, replace=False)
         y_labels_sorted = np.insert(y_labels_sorted, rand_label_ix, y_labels_sorted[rand_label_ix])
 
-        map_labels_y = dict()
-        for ix, label in zip(np.argsort(y), y_labels_sorted):
-            map_labels_y[ix] = label
+        map_labels_y = dict(zip(np.argsort(y), y_labels_sorted))
 
         y_labels = np.array([map_labels_y[ii] for ii in range(n_samples)])
 

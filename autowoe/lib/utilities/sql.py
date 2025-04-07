@@ -1,16 +1,8 @@
 """SQL-query utilities."""
 
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Tuple
-from typing import Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-from autowoe.lib.pipelines.pipeline_feature_special_values import MARK_SET
-from autowoe.lib.pipelines.pipeline_feature_special_values import NAN_SET
-from autowoe.lib.pipelines.pipeline_feature_special_values import SMALL_SET
-from autowoe.lib.pipelines.pipeline_feature_special_values import is_mark_prefix
+from autowoe.lib.pipelines.pipeline_feature_special_values import MARK_SET, NAN_SET, SMALL_SET, is_mark_prefix
 from autowoe.lib.utilities.utils import TaskType
 from autowoe.lib.woe.woe import WoE
 
@@ -28,7 +20,7 @@ def prepare_number(
     """Get encoding case when for number.
 
     Args:
-        woe_dict: Dictonary of WoE values.
+        woe_dict: Dictionary of WoE values.
         name: Name of feature.
         r_val: Numbers after the decimal point.
         round_features: Numbers after the decimal point.
@@ -57,7 +49,7 @@ def prepare_number(
         raise ValueError("NaN encoding value does not exists in woe_dict")
 
     nan_case = nan_pattern.format(f_val)
-    feature = """CASE\n  WHEN {0} THEN {1}\n""".format(nan_case, nan_val)
+    feature = f"""CASE\n  WHEN {nan_case} THEN {nan_val}\n"""
 
     # if feature_mark_values is not None:
     #     for grp in woe_dict.cod_dict:
@@ -71,20 +63,17 @@ def prepare_number(
     # create regular bins
     for grp, val in enumerate(woe_dict.split):
         enc_val = round(woe_dict.cod_dict[grp], r_val)
-        feature += """  WHEN {0} <= {1} THEN {2}\n""".format(f_val, round(val, round_features), enc_val)
+        feature += f"""  WHEN {f_val} <= {round(val, round_features)} THEN {enc_val}\n"""
 
     for mv in feature_mark_values:
         # enc = "__Mark__{}__".format(mv)
         enc = mark_encoding[name][mv]
         enc_val = round(woe_dict.cod_dict[enc], r_val)
-        feature += """  WHEN {0} == {1} THEN {2}\n""".format(f_val, mv, enc_val)
+        feature += f"""  WHEN {f_val} == {mv} THEN {enc_val}\n"""
 
     # create last else val
     enc_val = round(woe_dict.cod_dict[len(woe_dict.split)], r_val)
-    feature += """  ELSE {1}\nEND AS {0}""".format(
-        name,
-        enc_val,
-    )
+    feature += f"""  ELSE {enc_val}\nEND AS {name}"""
 
     return feature
 
@@ -100,7 +89,7 @@ def check_cat_symb(x: Union[str, Any]) -> str:
 
     """
     if type(x) is str:
-        x = "'{0}'".format(x)
+        x = f"'{x}'"
     else:
         x = str(x)
 
@@ -119,7 +108,7 @@ def prepare_category(
     """Get encoding case when for category.
 
     Args:
-        woe_dict: Dictonary of WoE values.
+        woe_dict: Dictionary of WoE values.
         name: Name of feature.
         r_val: Numbers after the decimal point.
         nan_pattern: Expression for nan processing.
@@ -170,7 +159,7 @@ def prepare_category(
     feature = """CASE\n"""
     if nan_val != small_val:
         nan_case = nan_pattern.format(f_val)
-        feature += """  WHEN {0} THEN {1}\n""".format(nan_case, nan_val)
+        feature += f"""  WHEN {nan_case} THEN {nan_val}\n"""
 
     # if feature_mark_values is not None:
     #     mark_case = []
@@ -187,7 +176,6 @@ def prepare_category(
     passed = {small_grp}
     for grp in woe_dict.split.values():
         if grp not in passed:
-
             search_vals = [
                 x
                 for x in woe_dict.split
@@ -196,12 +184,12 @@ def prepare_category(
             length = len(search_vals)
             search_vals = list(map(check_cat_symb, search_vals))
 
-            # filter NaN and Small cases separatly
+            # filter NaN and Small cases separately
             enc_val = round(woe_dict.cod_dict[grp], r_val)
             if length > 1:
-                feature += """  WHEN {0} IN ({1}) THEN {2}\n""".format(f_val, ", ".join(search_vals), enc_val)
+                feature += f"""  WHEN {f_val} IN ({", ".join(search_vals)}) THEN {enc_val}\n"""
             elif length == 1:
-                feature += """  WHEN {0} == {1} THEN {2}\n""".format(f_val, search_vals[0], enc_val)
+                feature += f"""  WHEN {f_val} == {search_vals[0]} THEN {enc_val}\n"""
 
             passed.add(grp)
 
@@ -210,13 +198,10 @@ def prepare_category(
         enc = mark_encoding[name][mv]
         idx_enc = woe_dict.split[enc]
         enc_val = round(woe_dict.cod_dict[idx_enc], r_val)
-        feature += """  WHEN {0} == {1} THEN {2}\n""".format(f_val, check_cat_symb(mv), enc_val)
+        feature += f"""  WHEN {f_val} == {check_cat_symb(mv)} THEN {enc_val}\n"""
 
     # create last ELSE with small
-    feature += """  ELSE {1}\nEND AS {0}""".format(
-        name,
-        small_val,
-    )
+    feature += f"""  ELSE {small_val}\nEND AS {name}"""
 
     return feature
 
@@ -274,7 +259,6 @@ def get_encoded_table(
     query = """SELECT\n"""
 
     for n, name in enumerate(model.features_fit.index):
-
         woe_dict = model.woe_dict[name]
 
         prep = None
@@ -297,7 +281,7 @@ def get_encoded_table(
 
         query += "\n"
 
-    query += """FROM {0}""".format(table_name)
+    query += f"""FROM {table_name}"""
 
     return query
 
@@ -324,15 +308,15 @@ def get_weights_query(model, table_name, output_name="PROB", alias="WOE_TAB", by
         # query = """SELECT\n ( {0}\n ) as {3}{1}\nFROM {2} as {4}"""
         query = """SELECT\n ( {S} * ( {LIN_FUN}\n) + {M}\n ) as {OUTPUT_NAME}{WOE_VALS}\nFROM {TABLE_NAME} as {ALIAS}"""
 
-    dot = "\n    {0}".format(round(model.intercept, round_wts))
+    dot = f"\n    {round(model.intercept, round_wts)}"
 
     for name, val in zip(model.features_fit.index, model.features_fit.values):
         sign = "" if val < 0 else "+"
-        dot += """\n    {0}{1}*{3}.{2}""".format(sign, round(val, round_wts), name, alias)
+        dot += f"""\n    {sign}{round(val, round_wts)}*{alias}.{name}"""
 
     other = ""
     if bypass_encoded:
-        other = """,\n  {0}.*""".format(alias)
+        other = f""",\n  {alias}.*"""
 
     # return query.format(dot, other, table_name, output_name, alias)
     query_args = {
