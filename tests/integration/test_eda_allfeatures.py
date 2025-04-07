@@ -98,7 +98,7 @@ def test_eda_all_features(train_data):
             woe_val["bin"] = woe_val[col].map(mapper)
             woe_val["bin"] = np.where(woe_val["bin"].isnull().values, woe_val[col], woe_val["bin"])
 
-        plot_bar(woe_val)
+        # plot_bar(woe_val)
 
         if time.time() - start_time > 0.3:
             fails_counter += 1
