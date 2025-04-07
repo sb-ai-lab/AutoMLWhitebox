@@ -1,0 +1,52 @@
+name: tests_macos
+
+on:
+  # # At 20:59 every day (23:59 MSK)
+  # schedule:
+  #   - cron: 59 20 * * *
+
+  # Manually triggerable in github
+  workflow_dispatch:
+
+  workflow_run:
+    workflows: ["tests_ubuntu"]
+    branches: [master]
+    types:
+      - completed
+
+jobs:
+  macos-tests:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: macos-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python (Conda)
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          channels: conda-forge
+          python-version: ${{ matrix.python-version }}
+          auto-activate-base: true
+          activate-environment: test
+
+      - name: install deps for MacOS
+        run: brew update && brew install libomp cairo pango gdk-pixbuf libffi
+
+      - name: install conda dependencies
+        run: |
+          conda install pip numpy==1.26.4
+
+      - name: install with pip
+        run: |
+          pip install tox==4.23.2
+          pip install tox-gh-actions==3.2.0
+
+      - name: test with tox
+        run: |
+          tox -- -vv

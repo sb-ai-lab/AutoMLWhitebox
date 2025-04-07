@@ -1,13 +1,10 @@
 """Weight of evidence."""
 
 from copy import deepcopy
-from typing import Dict
-from typing import List
-from typing import Tuple
+from typing import Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
-
 from pandas.core.frame import DataFrame
 
 from autowoe.lib.pipelines.pipeline_feature_special_values import is_mark_prefix
@@ -74,7 +71,6 @@ class WoE:
 
             return stat["woe"].to_dict(), stat, (t_good, t_bad)
         elif self.target_type == TaskType.REG:
-
             stat["woe"] = stat["mean"]
             iv_stat = stat["woe"].abs() * stat["size"] / stat["size"].sum()
             self.iv = iv_stat.sum()
@@ -128,7 +124,6 @@ class WoE:
 
         for key in nsm_values:
             if (key in ("__Small__", "__NaN__") or is_mark_prefix(key)) and key in good_stats.index:
-
                 check_row = good_stats.loc[key]
                 diff = (good_stats["woe"] - check_row["woe"]).abs()
                 min_diff = diff[diff > 0].min()
@@ -156,7 +151,6 @@ class WoE:
 
         # далее обработка нуллов и маленьких категорий
         for key in nsm_values:
-
             woe_val = None
 
             if key in ("__Mark_0__", "__Small_0__", "__NaN_0__"):
@@ -243,8 +237,8 @@ class WoE:
 
         """
         x_ = deepcopy(x)
-        for key in cv_index_split:
-            train_index, test_index = cv_index_split[key]
+        for value in cv_index_split.values():
+            train_index, test_index = value
             self.fit(x.iloc[train_index], y.iloc[train_index], spec_values)
             x_.iloc[test_index] = self.transform(x.iloc[test_index], spec_values)
         return x_.astype(float)

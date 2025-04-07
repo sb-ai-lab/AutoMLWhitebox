@@ -19,7 +19,7 @@ First of all you need to install [git](https://git-scm.com/downloads) and [poetr
 
 ```bash
 
-# Load LAMA source code
+# Load WhiteBox source code
 git clone https://github.com/AILab-MLTools/AutoMLWhitebox.git
 
 cd AutoMLWhiteBox/

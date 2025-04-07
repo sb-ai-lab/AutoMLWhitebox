@@ -2,19 +2,11 @@
 
 from collections import defaultdict
 from copy import deepcopy
-from typing import Any
-from typing import Dict
-from typing import Hashable
-from typing import Optional
-from typing import Set
-from typing import Tuple
-from typing import TypeVar
-from typing import Union
+from typing import Any, Dict, Hashable, Optional, Set, Tuple, TypeVar
 
 import pandas as pd
 
 from autowoe.lib.selectors.utils import F_LIST_TYPE
-
 
 TKey = TypeVar("TKey")
 TValue = TypeVar("TValue")
@@ -57,9 +49,9 @@ class FeatureSpecialValues:
     th_nan, то присавиваем woe 0. И на train и на test
     --------------------------------------------------------------------------------
     Категориальные признаки. Если категория небольшая (число сэмплов меньше, чем th_cat),
-    то кодируем ее отельным числом. Если nan то кодируем по аналогии с
+    то кодируем её отельным числом. Если nan то кодируем по аналогии с
     вещественным случаем с помощью th_nan. Если на тесте встречаем категорию,
-    которой не было на train, то отправляем ее в nan, маленькие категории, в woe со значением 0.
+    которой не было на train, то отправляем её в nan, маленькие категории, в woe со значением 0.
 
     Groups of special values:
         1. NaN-values (real, categorical features).
@@ -72,8 +64,8 @@ class FeatureSpecialValues:
     Categorical features processing:
         1. Small category (number of samples less than `th_cat`) ->
         2. Processing NaN-values as in real variables.
-        3. Сategory that didn't occur in the train dataset is assigned a NaN.
-        4. Сategory that didn't occur in the train dataset is assigned a NaN.
+        3. Category that didn't occur in the train dataset is assigned a NaN.
+        4. Category that didn't occur in the train dataset is assigned a NaN.
 
     Args:
         th_nan: Threshold for NaN-values process.
@@ -85,9 +77,9 @@ class FeatureSpecialValues:
 
     def __init__(
         self,
-        th_nan: Union[int, float] = 32,
-        th_cat: Union[int, float] = 32,
-        th_mark: Union[int, float] = 32,
+        th_nan: float = 32,
+        th_cat: float = 32,
+        th_mark: float = 32,
         cat_merge_to: str = "to_woe_0",
         nan_merge_to: str = "to_woe_0",
         mark_merge_to: str = "to_woe_0",
@@ -121,13 +113,13 @@ class FeatureSpecialValues:
 
         """
         train_ = deepcopy(train)
-        all_encoding = dict()
-        cat_encoding = dict()
+        all_encoding = {}
+        cat_encoding = {}
         mark_encoding = defaultdict(dict)
-        spec_values = dict()
+        spec_values = {}
         self._features_type = features_type
         for col in self._features_type:
-            d = dict()
+            d = {}
 
             if self._mark_values is not None and col in self._mark_values:
                 mark_values_mask = train_[col].isin(self._mark_values[col])
@@ -145,7 +137,7 @@ class FeatureSpecialValues:
                     #     d[enc_type] = None
 
                 for mv in self._mark_values[col]:
-                    enc_type_t = enc_type + "{}__".format(mv) if enc_type == "__Mark__" else enc_type
+                    enc_type_t = enc_type + f"{mv}__" if enc_type == "__Mark__" else enc_type
                     train_.loc[train_[col] == mv, col] = enc_type_t
                     mark_encoding[col][mv] = enc_type_t
                     # if self._features_type[col] != "cat":
@@ -218,7 +210,7 @@ class FeatureSpecialValues:
 
             if self._features_type[col] == "cat":
                 big_cat, _, small_pad = self.cat_encoding[col]
-                test_.loc[~(test_[col].isin(big_cat) | test_[col].isnull() | mark_values_mask), col] = small_pad
+                test_.loc[~(test_[col].isin(big_cat) | test_[col].isna() | mark_values_mask), col] = small_pad
 
             test_[col] = test_[col].fillna(self.all_encoding[col])
 
