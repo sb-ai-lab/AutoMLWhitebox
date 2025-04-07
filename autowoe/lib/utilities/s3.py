@@ -1,5 +1,5 @@
 """S3 wrapper."""
-# flake8: noqa
+# ruff: noqa
 
 import s3fs
 
@@ -36,5 +36,5 @@ class S3Client(s3fs.S3FileSystem):
             key=self.aws_access_key_id,
             secret=self.aws_secret_access_key,
             client_kwargs={"endpoint_url": self.endpoint_url},
-            **kwargs
+            **kwargs,
         )

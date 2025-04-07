@@ -1,24 +1,16 @@
 """Compose several selector."""
 
 from copy import copy
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Tuple
-from typing import TypeVar
+from typing import Any, Dict, List, Optional, Tuple, TypeVar
 
 import numpy as np
 import pandas as pd
+from sklearn.metrics import r2_score, roc_auc_score
 
-from sklearn.metrics import r2_score
-from sklearn.metrics import roc_auc_score
+from autowoe.lib.logging import get_logger
+from autowoe.lib.utilities.utils import TaskType, feature_changing
 
-from ..logging import get_logger
-from ..utilities.utils import TaskType
-from ..utilities.utils import feature_changing
 from .utils import F_LIST_TYPE
-
 
 logger = get_logger(__name__)
 
@@ -30,7 +22,7 @@ class ComposedSelector:
 
     Sequential filtering of features by rules:
         1) Unique WoE value.
-        2) Singel feature model has metric lower than threshold.
+        2) Single feature model has metric lower than threshold.
         3) VIF of feature greater than threshold.
         4) There are features with a pair correlation above the threshold.
 
@@ -117,7 +109,7 @@ class ComposedSelector:
                     if self.__compare_msg(
                         lambda x: ~np.isnan(self.precomp_corr.loc[x, x]),
                         col,
-                        "Feature {0} removed due to single WOE value".format(col),
+                        f"Feature {col} removed due to single WOE value",
                     )
                 ],
             ),  # func
@@ -138,7 +130,7 @@ class ComposedSelector:
                     if self.__compare_msg(
                         lambda x: self.precomp_metrics[x] >= metric_th,
                         col,
-                        "Feature {0} removed due to low metric value {1}".format(col, self.precomp_metrics[col]),
+                        f"Feature {col} removed due to low metric value {self.precomp_metrics[col]}",
                     )
                 ],
             ),  # func
@@ -159,7 +151,7 @@ class ComposedSelector:
             max_vif = vifs[max_vif_idx]
 
             if max_vif >= vif_th:
-                logger.info("Feature {0} removed due to high VIF value = {1}".format(candidates[max_vif_idx], max_vif))
+                logger.info(f"Feature {candidates[max_vif_idx]} removed due to high VIF value = {max_vif}")
                 if feature_history is not None:
                     feature_history[candidates[max_vif_idx]] = f"High VIF value = {round(max_vif, 2)}"
                 candidates = [x for (n, x) in enumerate(candidates) if n != max_vif_idx]
@@ -171,17 +163,15 @@ class ComposedSelector:
 
         n = 0
         while n < (len(candidates) - 1):
-
             partial_corrs = self.precomp_corr.loc[candidates[n], candidates[n + 1 :]]
             big_partial_corrs = partial_corrs[partial_corrs >= pearson_th]
             if len(big_partial_corrs) > 0:
                 logger.info(
-                    "Features {0}: metric = {1} was removed due to corr = {2} with feat {3}: metric = {4}".format(
-                        list(big_partial_corrs.index.values),
-                        list(self.precomp_metrics[big_partial_corrs.index]),
-                        list(big_partial_corrs.values),
-                        candidates[n],
-                        self.precomp_metrics[candidates[n]],
+                    (
+                        f"Features {list(big_partial_corrs.index.values)}: "
+                        f"metric = {list(self.precomp_metrics[big_partial_corrs.index])} was removed due to "
+                        f"corr = {list(big_partial_corrs.values)} with feat {candidates[n]}: "
+                        f"metric = {self.precomp_metrics[candidates[n]]}"
                     )
                 )
                 if feature_history is not None:

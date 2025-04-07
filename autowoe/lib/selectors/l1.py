@@ -1,20 +1,14 @@
 """Selector based on Lasso."""
 
-from typing import Dict
-from typing import List
-from typing import Tuple
-from typing import TypeVar
+from typing import Dict, List, Tuple, TypeVar
 
 import numpy as np
 import pandas as pd
 
-from autowoe.lib.selectors.utils import Result
-from autowoe.lib.selectors.utils import l1_select
+from autowoe.lib.selectors.utils import Result, l1_select
 from autowoe.lib.utilities.utils import TaskType
 
-from .utils import F_LIST_TYPE
-from .utils import FEATURE
-
+from .utils import F_LIST_TYPE, FEATURE
 
 WoE = TypeVar("WoE")
 

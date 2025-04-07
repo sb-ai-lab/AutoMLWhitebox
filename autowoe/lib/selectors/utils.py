@@ -1,25 +1,17 @@
 # noqa: D100
 
 from collections import namedtuple
-from typing import List
-from typing import Mapping
-from typing import Sequence
-from typing import Tuple
-from typing import Union
+from typing import List, Mapping, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
-
-from sklearn.linear_model import LassoCV
-from sklearn.linear_model import LogisticRegressionCV
+from sklearn.linear_model import LassoCV, LogisticRegressionCV
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import BaseCrossValidator
 from sklearn.svm import l1_min_c
 
+from autowoe.lib.logging import get_logger
 from autowoe.lib.utilities.utils import TaskType
-
-from ..logging import get_logger
-
 
 logger = get_logger(__name__)
 
@@ -115,7 +107,7 @@ def l1_select(
         n_jobs: Number of threads.
         dataset: Tuple of features and target.
         l1_grid_size: Number of points on grid.
-        l1_exp_scale: Maximun value of `C`.
+        l1_exp_scale: Maximum value of `C`.
         cv_split: Cross-Val splits.
         metric_tol: Metric tolerance.
 
@@ -130,7 +122,7 @@ def l1_select(
         cs = l1_min_c(dataset[0], dataset[1], loss="log", fit_intercept=True) * np.logspace(
             0, l1_exp_scale, l1_grid_size
         )
-        logger.info("C parameter range in [{0}:{1}], {2} values".format(cs[0], cs[-1], l1_grid_size))
+        logger.info(f"C parameter range in [{cs[0]}:{cs[-1]}], {l1_grid_size} values")
 
         model = LogisticRegressionCV(
             Cs=cs,
@@ -148,7 +140,7 @@ def l1_select(
         # get grid for cs
         cs = np.logspace(0, l1_exp_scale, l1_grid_size + 1)
         alphas = 1.0 / cs[1:][::-1]
-        logger.info("Alphas parameter range in [{0}:{1}], {2} values".format(alphas[0], alphas[-1], l1_grid_size))
+        logger.info(f"Alphas parameter range in [{alphas[0]}:{alphas[-1]}], {l1_grid_size} values")
 
         model = LassoCV(
             alphas=alphas, cv=cv, positive=interpreted_model, tol=1e-5, max_iter=1000, n_jobs=n_jobs, random_state=42

@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  # Manually triggerable in github
+  workflow_dispatch:
+
+  push:
+
+
+  pull_request:
+
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: pre-commit
+        uses: pre-commit/action@v2.0.3
+
+  codespell:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+
+    - name: codespell
+      run: |
+        pip install codespell
+        codespell --skip="*.js,*.csv,*.ipynb,*shaptxt*"
+
+  linux-py310-tests:
+    needs: pre-commit
+    runs-on: ubuntu-latest
+    if: |
+      ( github.event_name == 'push' ) && ( needs.pre-commit.result == 'success' )
+      ||
+      ( github.event_name == 'pull_request' ) && ( needs.pre-commit.result == 'success' )
+      ||
+      ( github.event_name == 'workflow_dispatch' ) && ( needs.pre-commit.result == 'success' )
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+
+      - uses: Gr1N/setup-poetry@v8
+        with:
+          poetry-version: 1.8.0
+
+      # - name: update pip if python 3.12
+      #   run: pip install setuptools && python -m ensurepip --upgrade
+
+      - name: install deps for Ubuntu
+        run: sudo apt-get install build-essential libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
+
+      - name: install tox
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install tox==4.23.2
+          pip3 install tox-gh-actions==3.2.0
+
+      - name: test with tox
+        run: |
+          tox
