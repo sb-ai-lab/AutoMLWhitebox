@@ -112,11 +112,11 @@ class TreeParamOptimizer:
         stats = np.array(stats)
         median_, std_ = np.median(stats, axis=(1, 2)), np.std(stats, axis=(1, 2))
 
-        id_max = zip(*(median_, -std_))  # номер комбинации с наилучшим качеством
-        id_max = max(enumerate(id_max), key=lambda x: x[1])[0]
+        scores = zip(*(median_ if self._task == TaskType.BIN else -median_, -std_))
+        id_best = max(enumerate(scores), key=lambda x: x[1])[0]
 
         stat_score = zip(*(median_, std_))
-        self._params_stats = OrderedDict((key, value) for (key, value) in zip(self.__params_gen, stat_score)), id_max
+        self._params_stats = OrderedDict((key, value) for (key, value) in zip(self.__params_gen, stat_score)), id_best
 
     def __call__(self, n: int) -> Dict[str, Union[int, str, None]]:
         """Execute optimization.
