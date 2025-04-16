@@ -722,8 +722,8 @@ class AutoWoE:
             self._target_scaler = StandardScaler()
             target_values = self._target_scaler.fit_transform(self.target.values.reshape(-1, 1))
             self.target.loc[:] = target_values.ravel()
-            self._target_std = self._target_scaler.mean_[0]
-            self._target_mean = self._target_scaler.scale_[0]
+            self._target_std = self._target_scaler.scale_[0]
+            self._target_mean = self._target_scaler.mean_[0]
 
     def _train_encoding(self, train: pd.DataFrame, spec_values: Dict, folds_codding: bool) -> pd.DataFrame:  # TODO: ref
         """Encode a train dataset based on WoE estimates."""
