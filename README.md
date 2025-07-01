@@ -1,7 +1,8 @@
 ## AutoWoE library
-
-![PyPI - Downloads](https://img.shields.io/pypi/dm/autowoe?color=green&label=PyPI%20downloads&logo=pypi&logoColor=orange&style=plastic)
-
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/AutoWoE)](https://pypi.org/project/AutoWoE)
+[![PyPI - Version](https://img.shields.io/pypi/v/AutoWoE)](https://pypi.org/project/AutoWoE)
+![pypi - Downloads](https://img.shields.io/pypi/dm/AutoWoE?color=green&label=PyPI%20downloads&logo=pypi&logoColor=green)
+[![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/sb-ai-lab/AutoMLWhitebox/CI.yml)](https://github.com/sb-ai-lab/AutoMLWhitebox/actions/workflows/CI.yml?query=branch%3Amaster)
 
 This is the repository for **AutoWoE** library, developed by LightAutoML group. This library can be used for automatic creation of interpretable ML model based on feature binning, WoE features transformation, feature selection and Logistic Regression.
 
@@ -42,5 +43,7 @@ poetry install
 
 **Usage tutorials** are in Jupyter notebooks in the repository root. For **parameters description** take a look at `parameters_info.md`.
 
-**Bugs / Questions / Suggestions:**:
-- Vakhrushev Anton (btbpanda@gmail.com)
+**Bugs / Questions / Suggestions:**
+- Seek prompt advice in [Telegram group](https://t.me/joinchat/sp8P7sdAqaU0YmRi).
+- Open bug reports and feature requests on GitHub [issues](https://github.com/sb-ai-lab/AutoMLWhitebox/issues).
+- Also follow our [Telegram channel](https://t.me/lightautoml)
