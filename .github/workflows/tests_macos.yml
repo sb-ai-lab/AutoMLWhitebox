@@ -26,21 +26,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Python (Conda)
-        uses: conda-incubator/setup-miniconda@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
         with:
-          auto-update-conda: true
-          channels: conda-forge
           python-version: ${{ matrix.python-version }}
-          auto-activate-base: true
-          activate-environment: test
 
       - name: install deps for MacOS
         run: brew update && brew install libomp cairo pango gdk-pixbuf libffi
-
-      - name: install conda dependencies
-        run: |
-          conda install pip numpy==1.26.4
 
       - name: install with pip
         run: |
