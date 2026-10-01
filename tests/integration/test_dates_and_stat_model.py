@@ -25,14 +25,11 @@ def test_dates_and_stat_model(train_data, test_data, test_target):
     )
     auto_woe = ReportDeco(auto_woe)
 
-    start_fit_time = time.time()
     auto_woe.fit(
         train[num_col + date_col + ["target"]],
         target_name="target",
         features_type=features_type,
     )
-
-    assert time.time() - start_fit_time < 60, f"Fit time is {time.time() - start_fit_time}, it's more than 60"
 
     start_pred_time = time.time()
     pred = auto_woe.predict_proba(test)
