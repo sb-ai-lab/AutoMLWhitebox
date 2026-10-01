@@ -138,7 +138,7 @@ class FeatureSpecialValues:
 
                 for mv in self._mark_values[col]:
                     enc_type_t = enc_type + f"{mv}__" if enc_type == "__Mark__" else enc_type
-                    train_.loc[train_[col] == mv, col] = enc_type_t
+                    train_[col] = train_[col].mask(train_[col] == mv, enc_type_t)
                     mark_encoding[col][mv] = enc_type_t
                     # if self._features_type[col] != "cat":
                     d[enc_type_t] = fill_val
@@ -159,10 +159,9 @@ class FeatureSpecialValues:
                     enc_type = "__Small__"
                     # d[enc_type] = None
 
-                if train_.loc[:, col].dtypes is not object:  # trouble when we have numerical col
+                if not pd.api.types.is_object_dtype(train_[col].dtype):
                     train_[col] = train_[col].astype(object)
-
-                train_.loc[train_[col].isin(small_cat), col] = enc_type
+                train_[col] = train_[col].mask(train_[col].isin(small_cat), enc_type)
                 cat_encoding[col] = big_cat.difference(small_cat), small_cat, enc_type
                 #  Небольшие категории, которые будем кодировать отдельно
 
@@ -207,13 +206,14 @@ class FeatureSpecialValues:
             if self._mark_values is not None and col in self._mark_values:
                 mark_values_mask = test_[col].isin(self._mark_values[col])
                 if mark_values_mask.sum() > 0:
-                    test_.loc[mark_values_mask, col] = test_.loc[mark_values_mask, col].map(self.mark_encoding[col])
+                    test_[col] = test_[col].mask(mark_values_mask, test_[col].map(self.mark_encoding[col]))
             else:
                 mark_values_mask = pd.Series(data=[False] * test.shape[0], index=test.index)
 
             if self._features_type[col] == "cat":
                 big_cat, _, small_pad = self.cat_encoding[col]
-                test_.loc[~(test_[col].isin(big_cat) | test_[col].isna() | mark_values_mask), col] = small_pad
+                small_mask = ~(test_[col].isin(big_cat) | test_[col].isna() | mark_values_mask)
+                test_[col] = test_[col].mask(small_mask, small_pad)
 
             test_[col] = test_[col].fillna(self.all_encoding[col])
 

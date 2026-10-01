@@ -86,16 +86,17 @@ class WoE:
         else:
             spec_values_ = []
 
-        x_.loc[x_.isin(spec_values_)] = -np.inf
+        spec_values_mask = x_.isin(spec_values_)
+        x_ = x_.mask(spec_values_mask, -np.inf)
         df_cod = self.__codding(x_)
 
-        if len(x.loc[x.isin(spec_values_)]) == 0 or len(spec_values_) == 0:
+        if not spec_values_mask.any() or len(spec_values_) == 0:
             return df_cod
 
         if df_cod.dtypes is not object:
             df_cod = df_cod.astype(object)
 
-        df_cod.loc[x.isin(spec_values_)] = x.loc[x.isin(spec_values_)]
+        df_cod.loc[spec_values_mask] = x.loc[spec_values_mask]
 
         return df_cod
 

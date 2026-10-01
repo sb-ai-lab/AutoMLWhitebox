@@ -82,14 +82,15 @@ def cat_checker(feature: pd.Series) -> bool:
         Flag.
 
     """
-    dtypes = [object, str]
-    if np.__version__ < "1.18.0":
-        dtypes.append(np.str)
-    if feature.dtype in dtypes:
+    if pd.api.types.is_object_dtype(feature.dtype) or pd.api.types.is_string_dtype(feature.dtype):
         return True
 
     feature_unique = feature.unique()
-    if 2 < feature_unique.shape[0] <= F_UNIQUE and np.all(feature_unique.astype(np.int64) == feature_unique):
+    if (
+        2 < feature_unique.shape[0] <= F_UNIQUE
+        and not pd.isna(feature_unique).any()
+        and np.all(feature_unique.astype(np.int64) == feature_unique)
+    ):
         return True
     else:
         return False
