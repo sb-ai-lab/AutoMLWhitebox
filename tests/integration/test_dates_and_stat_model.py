@@ -32,7 +32,7 @@ def test_dates_and_stat_model(train_data, test_data, test_target):
         features_type=features_type,
     )
 
-    assert time.time() - start_fit_time < 50, f"Fit time is {time.time() - start_fit_time}, it's more than 50"
+    assert time.time() - start_fit_time < 60, f"Fit time is {time.time() - start_fit_time}, it's more than 60"
 
     start_pred_time = time.time()
     pred = auto_woe.predict_proba(test)

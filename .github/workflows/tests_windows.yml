@@ -9,6 +9,8 @@ on:
 jobs:
   windows-tests:
     runs-on: windows-latest
+    env:
+      MPLBACKEND: Agg
     strategy:
       fail-fast: false
       matrix:
