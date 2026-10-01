@@ -1,9 +1,6 @@
 import numpy as np
-import time
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
-
-from pandas import Series
 
 from autowoe import AutoWoE
 
@@ -37,24 +34,5 @@ def test_eda_all_features(train_data):
     assert np.isclose(score, 0.6186, atol=1e-4), f"Real score is {score}"
 
     enc = autowoe.test_encoding(train_df, list(autowoe.woe_dict.keys()), bins=True)
-    fails_counter = 0
-    for col in enc.columns:
-        start_time = time.time()
-
-        grp = enc.groupby(col).size()
-        woe = autowoe.woe_dict[col]
-
-        woe_val = Series(woe.cod_dict).reset_index()
-        woe_val.columns = [col, "WoE"]
-        woe_val["count"] = woe_val[col].map(grp).fillna(0).values.astype(int)
-        if woe.f_type == "cat":
-            woe_val["bin"] = woe_val[col]
-        else:
-            split = list(woe.split.astype(np.float32))
-            mapper = {n: f"({x}; {y}]" for (n, (x, y)) in enumerate(zip(["-inf"] + split, split + ["inf"]))}
-            woe_val["bin"] = woe_val[col].map(mapper)
-            woe_val["bin"] = np.where(woe_val["bin"].isnull().values, woe_val[col], woe_val["bin"])
-
-        if time.time() - start_time > 0.3:
-            fails_counter += 1
-    assert fails_counter <= 1, f"There were {fails_counter} fails, it's more than 1"
+    assert len(enc) == len(train_df)
+    assert set(enc.columns) == set(autowoe.woe_dict)

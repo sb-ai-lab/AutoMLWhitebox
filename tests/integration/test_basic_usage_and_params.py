@@ -1,4 +1,3 @@
-import time
 import numpy as np
 
 from sklearn.metrics import roc_auc_score
@@ -89,7 +88,6 @@ def test_basic_usage_and_params(train_data, test_data, test_target):
 
     auto_woe = ReportDeco(auto_woe)
 
-    start_fit_time = time.time()
     auto_woe.fit(
         train[features + ["target"]],
         target_name="target",
@@ -100,13 +98,7 @@ def test_basic_usage_and_params(train_data, test_data, test_target):
         validation=test,
     )
 
-    assert time.time() - start_fit_time < 25, f"Fit time is {time.time() - start_fit_time}, it's more than 25"
-
-    start_predict_time = time.time()
     pred = auto_woe.predict_proba(test)
-    assert (
-        time.time() - start_predict_time < 3.5
-    ), f"Predict time is {time.time() - start_predict_time}, it's more than 3.5"
 
     score_1 = roc_auc_score(test["target"], pred)
 

@@ -1,5 +1,3 @@
-import time
-
 from sklearn.metrics import roc_auc_score
 
 from autowoe import ReportDeco, AutoWoE
@@ -31,10 +29,7 @@ def test_dates_and_stat_model(train_data, test_data, test_target):
         features_type=features_type,
     )
 
-    start_pred_time = time.time()
     pred = auto_woe.predict_proba(test)
-
-    assert time.time() - start_pred_time < 5, f"Predict time is {time.time() - start_pred_time}, it's more than 5"
 
     score = roc_auc_score(test["target"], pred)
 

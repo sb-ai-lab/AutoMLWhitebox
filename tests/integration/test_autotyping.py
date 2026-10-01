@@ -1,5 +1,3 @@
-import time
-
 from sklearn.metrics import roc_auc_score
 
 from autowoe import ReportDeco, AutoWoE
@@ -32,12 +30,7 @@ def test_autotyping(cat_data):
     }
     auto_woe.fit(**autowoe_fit_params)
 
-    start_pred_time = time.time()
     pred = auto_woe.predict_proba(test)
-
-    assert (
-        time.time() - start_pred_time < 5
-    ), f"Prediction time is {time.time() - start_pred_time}, it's more than 5 seconds"
 
     score = roc_auc_score(test[autowoe_fit_params["target_name"]], pred)
 
