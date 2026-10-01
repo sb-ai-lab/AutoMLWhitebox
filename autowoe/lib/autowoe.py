@@ -586,7 +586,7 @@ class AutoWoE:
         fit_result, _ = feature_changing(
             self.feature_history,
             "Pruned during regression refit",
-            self._private_features_type,
+            best_features,
             self._model_fit,
             self.train_df,
             best_features,
