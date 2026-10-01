@@ -51,7 +51,7 @@ class CatEncoding:
             self.data_info.iloc[test_index, 1] = self.data_info.iloc[test_index, 0].map(d_agg)
 
         train_f = self.data.copy()
-        train_f.iloc[:, 0] = self.data_info["mean_enc"].values
+        train_f[self.col[0]] = self.data_info["mean_enc"].to_numpy(dtype=float)
         return train_f
 
     def mean_target_reverse(self, split: Union[List[float], np.ndarray]) -> Dict[int, int]:

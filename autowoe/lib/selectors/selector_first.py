@@ -60,7 +60,7 @@ def nan_constant_selector(
                 features_to_drop.append(col)
 
     logger.info(f" features {features_to_drop} contain too many nans or identical values")
-    data = data.drop(columns=features_to_drop, axis=1)
+    data = data.drop(columns=features_to_drop)
     features_type = drop_keys(features_type, features_to_drop)
     return data, features_type
 
@@ -188,6 +188,6 @@ def feature_imp_selector(
     else:
         raise ValueError("select_type is None or int > 0")
     logger.info(f" features {features_to_drop} have low importance")
-    data = data.drop(columns=features_to_drop, axis=1)
+    data = data.drop(columns=features_to_drop)
     features_type = drop_keys(features_type, features_to_drop)
     return data, features_type
