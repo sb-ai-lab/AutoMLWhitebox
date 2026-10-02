@@ -47,3 +47,30 @@ def test_feature_imp_selector_drops_columns(monkeypatch):
 
     assert list(selected.columns) == ["important", "target"]
     assert feature_types == {"important": "real"}
+
+
+def test_permutation_selector_with_lightgbm():
+    rng = np.random.default_rng(42)
+    signal = rng.normal(size=200)
+    data = pd.DataFrame(
+        {
+            "signal": signal,
+            "noise": rng.normal(size=200),
+            "target": (signal > 0).astype(int),
+        }
+    )
+
+    selected, feature_types = selector_first.feature_imp_selector(
+        data=data,
+        task=TaskType.BIN,
+        features_type={"signal": "real", "noise": "real"},
+        features_mark_values=None,
+        target_name="target",
+        imp_th=0,
+        imp_type="perm_imp",
+        select_type=1,
+        process_num=1,
+    )
+
+    assert list(selected.columns) == ["signal", "target"]
+    assert feature_types == {"signal": "real"}

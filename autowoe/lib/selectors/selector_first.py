@@ -137,14 +137,13 @@ def feature_imp_selector(
             data=test.drop(target_name, axis=1), label=test[target_name], categorical_feature=categorical_feature
         )
 
-        lgb_kwargs = {"params": params, "train_set": lgb_train, "valid_sets": [lgb_test], "valid_names": ["val_test"]}
-        if lgb.__version__ >= "3.3.0":
-            lgb_kwargs["callbacks"] = [lgb.log_evaluation(period=verbose_eval), lgb.early_stopping(10, False, True)]
-        else:
-            lgb_kwargs["early_stopping_rounds"] = 10
-            lgb_kwargs["verbose_eval"] = verbose_eval
-
-        model = lgb.train(**lgb_kwargs)
+        model = lgb.train(
+            params=params,
+            train_set=lgb_train,
+            valid_sets=[lgb_test],
+            valid_names=["val_test"],
+            callbacks=[lgb.log_evaluation(period=verbose_eval), lgb.early_stopping(10, False, True)],
+        )
         imp_dict = dict(zip(train.drop(target_name, axis=1).columns, model.feature_importance()))
     elif imp_type == "perm_imp":
         if task == TaskType.BIN:
@@ -168,8 +167,7 @@ def feature_imp_selector(
             eval_set=[(test_, test[target_name].values)],
             eval_names=["val_set"],
             eval_metric=params["metric"],
-            early_stopping_rounds=10,
-            verbose=verbose_eval,
+            callbacks=[lgb.log_evaluation(period=verbose_eval), lgb.early_stopping(10, verbose=verbose_eval > 0)],
         )
         _, score_decreases = get_score_importances(
             score_func=get_score_function(model, task), X=test_, y=test[target_name]

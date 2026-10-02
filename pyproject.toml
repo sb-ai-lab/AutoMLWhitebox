@@ -7,8 +7,6 @@ readme = "README.md"
 homepage = "https://github.com/AILab-MLTools/AutoMLWhitebox"
 repository = "https://github.com/AILab-MLTools/AutoMLWhitebox"
 classifiers = [
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -24,12 +22,12 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8"
+python = ">=3.10,<4.0"
 numpy = "*"
 scipy = "*"
 pandas = "*"
-scikit-learn = "*"
-lightgbm = "*"
+scikit-learn = ">=1.0.1"
+lightgbm = ">=4.6.0"
 sphinx = "*"
 sphinx-rtd-theme = "*"
 joblib = ">=1.2.0"
@@ -37,16 +35,19 @@ pytz = "*"
 pytest = "*"
 jinja2 = "*"
 matplotlib = "*"
-pillow = ">=10.2.0"
-seaborn = "*"
+pillow = ">=12.3.0"
+certifi = ">=2023.7.22"
+requests = ">=2.33.0"
+urllib3 = ">=2.8.0"
+seaborn = ">=0.13.2"
 tqdm = "^4.62.3"
 StrEnum = "^0.4.7"
 
 
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 notebook = "^6.4.6"
-black = "20.8b1"
+black = ">=24.10.0"
 pre-commit = "2.15.0"
 mypy = "^0.910"
 tox = "*"
@@ -55,7 +56,14 @@ flake8-docstrings = "^1.6.0"
 isort = "5.7.0"
 jupyter-contrib-nbextensions = "^0.5.1"
 jupyter_nbextensions_configurator = "^0.4.1"
+jupyter-core = ">=4.11.2"
+lxml = ">=6.1.0"
+mistune = ">=3.3.0"
+nbconvert = ">=7.17.0"
+tornado = ">=6.5.9"
+virtualenv = ">=21.7.13"
+pyyaml = ">=6.0.2"
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"
