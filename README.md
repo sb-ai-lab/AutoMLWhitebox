@@ -4,6 +4,8 @@
 ![pypi - Downloads](https://img.shields.io/pypi/dm/AutoWoE?color=green&label=PyPI%20downloads&logo=pypi&logoColor=green)
 [![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/sb-ai-lab/AutoMLWhitebox/CI.yml)](https://github.com/sb-ai-lab/AutoMLWhitebox/actions/workflows/CI.yml?query=branch%3Amaster)
 
+### [Telegram chat](https://t.me/joinchat/sp8P7sdAqaU0YmRi) | [Telegram channel](https://t.me/lightautoml)
+
 This is the repository for **AutoWoE** library, developed by LightAutoML group. This library can be used for automatic creation of interpretable ML model based on feature binning, WoE features transformation, feature selection and Logistic Regression.
 
 **Authors:** Vakhrushev Anton, Grigorii Penkin, Alexander Kirilin
