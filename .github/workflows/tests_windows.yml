@@ -1,33 +1,26 @@
 name: tests_windows
 
 on:
-  # # At 20:59 every day (23:59 MSK)
-  # schedule:
-  #   - cron: 59 20 * * *
-
-  # Manually triggerable in github
   workflow_dispatch:
-
-  workflow_run:
-    workflows: ["tests_ubuntu"]
+  push:
     branches: [master]
-    types:
-      - completed
+  pull_request:
 
 jobs:
   windows-tests:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: windows-latest
+    env:
+      MPLBACKEND: Agg
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 

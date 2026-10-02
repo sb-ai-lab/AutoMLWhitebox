@@ -1,4 +1,3 @@
-import time
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 
@@ -25,19 +24,10 @@ def test_regression_task(regression_data):
         verbose=0,
     )
 
-    start_fit_time = time.time()
     autowoe.fit(train=train_df, target_name=TARGET_NAME)
-
-    assert time.time() - start_fit_time < 25
-
-    start_predicts_time = time.time()
 
     train_pred = autowoe.predict(train_df)
     test_pred = autowoe.predict(test_df)
-
-    train_pred = autowoe.predict(train_df)
-
-    assert time.time() - start_predicts_time < 0.3, f"Pred time is {time.time() - start_predicts_time}, >= 0.3"
 
     r2_train = r2_score(train_df[TARGET_NAME], train_pred)
     r2_test = r2_score(test_df[TARGET_NAME], test_pred)

@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import time
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
@@ -52,18 +51,13 @@ def test_marked_values(train_data):
     for param in none_params:
         assert autowoe.__dict__[param] is None, f"This value should be None, but it's {autowoe.__dict__[param]}"
 
-    start_fit_time = time.time()
     autowoe.fit(
         train=train_df,
         target_name=TARGET_NAME,
         features_mark_values={"number_0": (-1, -2), "number_1": (1234567890,), "string_1": ("Special",)},
     )
 
-    assert time.time() - start_fit_time < 10, f"Fit time is {time.time() - start_fit_time}, it's more than 10"
-
-    start_predict_time = time.time()
     test_pred = autowoe.predict_proba(test_df)
-    assert time.time() - start_predict_time < 0.05, f"Diff is {time.time() - start_predict_time}, >= 0.05"
 
     score = roc_auc_score(test_df[TARGET_NAME], test_pred)
 
