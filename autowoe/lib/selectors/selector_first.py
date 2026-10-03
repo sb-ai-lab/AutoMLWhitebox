@@ -113,6 +113,17 @@ def feature_imp_selector(
         for col, mvs in features_mark_values.items():
             data_ = data_[~data_[col].isin(mvs)]
 
+    if not features_type:
+        raise ValueError(
+            "No features left for importance selection. "
+            "All features were filtered out by the previous selection steps (NaN/constant filters)."
+        )
+    if data_.shape[0] == 0:
+        raise ValueError(
+            "No rows left for importance selection. "
+            "All rows were filtered out by features_mark_values. Check the marked values."
+        )
+
     categorical_feature = [key for key in features_type if features_type[key] == "cat"]
     if categorical_feature:
         data_[categorical_feature] = data_[categorical_feature].astype("category")

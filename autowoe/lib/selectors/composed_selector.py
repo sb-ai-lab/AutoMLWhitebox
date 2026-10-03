@@ -141,7 +141,7 @@ class ComposedSelector:
 
         # итеративный виф
         max_vif = np.inf
-        while max_vif > vif_th:
+        while max_vif > vif_th and candidates:
             corrs = self.precomp_corr.loc[candidates, candidates]
             # fix singularity
             corrs = corrs.values + np.diag(np.ones(corrs.shape[0]) * 1e-4)

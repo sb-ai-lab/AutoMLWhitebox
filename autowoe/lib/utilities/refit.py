@@ -16,6 +16,12 @@ from .utils import TaskType
 logger = get_logger(__name__)
 
 
+def _sklearn_at_least(major: int, minor: int) -> bool:
+    """Compare sklearn version numerically (str comparison breaks on 1.10+)."""
+    ver = sklearn.__version__.split(".")
+    return (int(ver[0]), int(ver[1])) >= (major, minor)
+
+
 def refit_reg(
     task: TaskType,
     x_train: np.ndarray,
@@ -126,7 +132,7 @@ def refit_simple(
 
     n = -1
 
-    logreg_penalty = None if sklearn.__version__ >= "1.2.0" else "none"
+    logreg_penalty = None if _sklearn_at_least(1, 2) else "none"
 
     while True:
         n += 1
@@ -240,7 +246,7 @@ def calc_p_val_on_valid(
         p values, b vars.
 
     """
-    logreg_penalty = None if sklearn.__version__ >= "1.2.0" else "none"
+    logreg_penalty = None if _sklearn_at_least(1, 2) else "none"
 
     if task == TaskType.BIN:
         model = LogisticRegression(penalty=logreg_penalty, solver="lbfgs", warm_start=False, intercept_scaling=1)
@@ -261,9 +267,9 @@ def calc_p_val_reg(
     n, k = x_train.shape
     y_pred = (np.dot(x_train, weights) + intercept).T
 
-    # Change X and Y into numpy matrices. x also has a column of ones added to it.
-    x = np.hstack((np.matrix(x_train), np.ones((n, 1))))
-    y_train = np.matrix(y_train).T
+    # Change X and Y into column-stacked arrays. x also has a column of ones added to it.
+    x = np.hstack((x_train, np.ones((n, 1))))
+    y_train = np.asarray(y_train, dtype=float).reshape(-1, 1)
 
     # Degrees of freedom.
     freedom_degrees = float(n - k - 1)
@@ -273,10 +279,10 @@ def calc_p_val_reg(
     sampleVariance = sse / freedom_degrees
 
     # Sample variance for x.
-    sampleVarianceX = x.T * x
+    sampleVarianceX = x.T @ x
 
     # Covariance Matrix = [(s^2)(X'X)^-1]^0.5. (sqrtm = matrix square root.  ugly)
-    covarianceMatrix = linalg.sqrtm(sampleVariance[0, 0] * sampleVarianceX.I)
+    covarianceMatrix = linalg.sqrtm(sampleVariance[0] * np.linalg.inv(sampleVarianceX))
 
     # Standard errors for the difference coefficients: the diagonal elements of the covariance matrix.
     se = covarianceMatrix.diagonal()  # [1:]

@@ -505,6 +505,12 @@ class AutoWoE:
             process_num=self.params["n_jobs"],
         )
 
+        if not self._private_features_type:
+            raise ValueError(
+                "All features were filtered out by NaN/constant and importance selection. "
+                "Check the input data and selection parameters (th_const, imp_th, select_type)."
+            )
+
         # Fill small group of category features, NaN-values by tags
         self._features_special_values = FeatureSpecialValues(
             th_nan=self.params["th_nan"],
@@ -718,7 +724,14 @@ class AutoWoE:
         return task
 
     def _preprocess_target(self):
-        if self.params["task"] == TaskType.REG:
+        if self.params["task"] == TaskType.BIN:
+            n_unique = self.target.nunique(dropna=True)
+            if n_unique != 2:
+                raise ValueError(
+                    f"Binary task (task='BIN') requires the target to have exactly 2 distinct values, "
+                    f"got {n_unique}. Binarize the target or use task='REG'."
+                )
+        elif self.params["task"] == TaskType.REG:
             self._target_scaler = StandardScaler()
             target_values = self._target_scaler.fit_transform(self.target.values.reshape(-1, 1))
             self.target.loc[:] = target_values.ravel()
@@ -727,6 +740,11 @@ class AutoWoE:
 
     def _train_encoding(self, train: pd.DataFrame, spec_values: Dict, folds_codding: bool) -> pd.DataFrame:  # TODO: ref
         """Encode a train dataset based on WoE estimates."""
+        if not self.private_features_type:
+            raise ValueError(
+                "All features were filtered out: no feature left after WoE transformation. "
+                "Check the input data and binning parameters (min_bin_size, max_bin_count, woe_diff_th)."
+            )
         woe_dict = {}
         woe_list = []
         for feature in self.private_features_type:
