@@ -63,3 +63,52 @@ def test_cat_encoding_replaces_integer_column_with_floats():
     result = encoder(folds, np.array([], dtype=int))
 
     assert pd.api.types.is_float_dtype(result["feature"])
+
+
+def test_special_values_fillna_nullable_int():
+    processor = FeatureSpecialValues(th_nan=1, th_cat=1)
+    train, spec = processor.fit_transform(
+        pd.DataFrame({"feature": pd.array([1, 2, None, None], dtype="Int64")}), {"feature": "real"}
+    )
+
+    assert train["feature"].tolist()[:2] == [1, 2]
+    assert train["feature"].tolist()[2:] == ["__NaN__", "__NaN__"]
+    assert spec == {"feature": {"__NaN__": None}}
+
+
+def test_special_values_transform_nullable_float():
+    processor = FeatureSpecialValues(th_nan=100, th_cat=10)
+    processor.fit_transform(
+        pd.DataFrame({"feature": pd.array([1.0, 2.0, None] * 10, dtype="Float64")}), {"feature": "real"}
+    )
+
+    test, _ = processor.transform(pd.DataFrame({"feature": pd.array([1.0, None], dtype="Float64")}), ["feature"])
+
+    assert test["feature"].tolist() == [1.0, "__NaN_0__"]
+
+
+def test_special_values_mark_nullable_int():
+    processor = FeatureSpecialValues(th_nan=2, th_cat=2, th_mark=2, mark_values={"feature": (-1,)})
+    train, _ = processor.fit_transform(
+        pd.DataFrame({"feature": pd.array([1, -1, 2, -1, None] * 2, dtype="Int64")}), {"feature": "real"}
+    )
+
+    assert train["feature"].tolist() == [1, "__Mark__-1__", 2, "__Mark__-1__", "__NaN__"] * 2
+
+
+def test_special_values_categorical_dtype_with_marks():
+    processor = FeatureSpecialValues(th_nan=1, th_cat=2, th_mark=10, mark_values={"feature": ("miss",)})
+    train, _ = processor.fit_transform(
+        pd.DataFrame({"feature": pd.Categorical(["a", "a", "b", "miss", None])}), {"feature": "cat"}
+    )
+
+    assert train["feature"].tolist() == ["a", "a", "__Small__", "__Mark_0__", "__NaN__"]
+
+
+def test_special_values_transform_categorical_dtype():
+    processor = FeatureSpecialValues(th_nan=1, th_cat=2)
+    processor.fit_transform(pd.DataFrame({"feature": pd.Categorical(["a", "a", "b", None])}), {"feature": "cat"})
+
+    test, _ = processor.transform(pd.DataFrame({"feature": pd.Categorical(["a", "c", None])}), ["feature"])
+
+    assert test["feature"].tolist() == ["a", "__Small__", "__NaN__"]
