@@ -4,6 +4,7 @@ from collections import defaultdict
 from copy import deepcopy
 from typing import Any, Dict, Hashable, Optional, Set, Tuple, TypeVar
 
+import numpy as np
 import pandas as pd
 
 from autowoe.lib.selectors.utils import F_LIST_TYPE
@@ -40,6 +41,18 @@ REAL_SPECIAL_SET = {*NAN_SET, *MARK_SET}  # - {"__NaN__", "__Small__", "__Mark__
 def is_mark_prefix(s):
     """Mark encode."""
     return isinstance(s, str) and s.startswith("__Mark__")
+
+
+def _cast_extension_to_object(series: pd.Series) -> pd.Series:
+    """Cast extension-dtype column to ``object``.
+
+    Extension dtypes (nullable ``Int64``/``Float64``/``boolean``, ``string``, ``category``,
+    arrow-backed dtypes) do not accept string special-value tags in ``mask``/``fillna``,
+    while plain numpy dtypes are upcast by pandas automatically.
+    """
+    if not isinstance(series.dtype, np.dtype):
+        return series.astype(object)
+    return series
 
 
 class FeatureSpecialValues:
@@ -120,6 +133,7 @@ class FeatureSpecialValues:
         self._features_type = features_type
         for col in self._features_type:
             d = {}
+            train_[col] = _cast_extension_to_object(train_[col])
 
             if self._mark_values is not None and col in self._mark_values:
                 mark_values_mask = train_[col].isin(self._mark_values[col])
@@ -203,6 +217,8 @@ class FeatureSpecialValues:
         test_ = test[features].copy()
 
         for col in features:
+            test_[col] = _cast_extension_to_object(test_[col])
+
             if self._mark_values is not None and col in self._mark_values:
                 mark_values_mask = test_[col].isin(self._mark_values[col])
                 if mark_values_mask.sum() > 0:

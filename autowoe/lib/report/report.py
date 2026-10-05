@@ -15,7 +15,6 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
-import sklearn
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
@@ -24,7 +23,7 @@ from autowoe.lib.utilities.utils import TaskType
 
 from ..autowoe import AutoWoE
 from ..logging import get_logger
-from ..utilities.refit import calc_p_val_on_valid
+from ..utilities.refit import _sklearn_at_least, calc_p_val_on_valid
 from .report_generator import ReportGenerator
 from .utilities_images.utilities_images import plot_backlash_check
 from .utilities_images.utilities_images import plot_bars
@@ -643,7 +642,7 @@ class ReportDeco:
     def __refit_leave_one_out(self):
         if len(self.features_fit) < 2:
             return []
-        logreg_penalty = None if sklearn.__version__ >= "1.2.0" else "none"
+        logreg_penalty = None if _sklearn_at_least(1, 2) else "none"
 
         result = dict()
         initial_score = roc_auc_score(y_true=self.__test_target.values, y_score=self.__predict_proba)

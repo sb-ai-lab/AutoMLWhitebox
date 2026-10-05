@@ -87,6 +87,12 @@ class Selector:
         features_fit = self.__pearson_selector(
             feature_history, self.features_fit, pearson_th=pearson_th, metric_th=metric_th, vif_th=vif_th
         )
+        if not features_fit:
+            raise ValueError(
+                "All features were filtered out during selection "
+                "(constant WoE / low metric / high VIF / high correlation filters). "
+                "Relax the selection thresholds (pearson_th, metric_th, vif_th)."
+            )
         features_before = set(features_fit)
         features_fit, result = self.__main_selector(
             features_fit=features_fit, l1_grid_size=l1_grid_size, l1_exp_scale=l1_exp_scale, metric_tol=metric_tol
