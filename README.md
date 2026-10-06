@@ -16,6 +16,8 @@ This is the repository for **AutoWoE** library, developed by LightAutoML group. 
 ```bash
 pip install autowoe
 ```
+For the optional S3 client, install with `pip install 'autowoe[s3]'` instead.
+
 2. Installation from source code
 
 First of all you need to install [git](https://git-scm.com/downloads) and [poetry](https://python-poetry.org/docs/#installation).
@@ -25,7 +27,7 @@ First of all you need to install [git](https://git-scm.com/downloads) and [poetr
 # Load WhiteBox source code
 git clone https://github.com/AILab-MLTools/AutoMLWhitebox.git
 
-cd AutoMLWhiteBox/
+cd AutoMLWhitebox/
 
 # !!!Choose only one item!!!
 
@@ -43,7 +45,7 @@ poetry install
 ```
 
 
-**Usage tutorials** are in Jupyter notebooks in the repository root. For **parameters description** take a look at `parameters_info.md`.
+**Usage tutorials** are Jupyter notebooks in the `examples/` directory. Run them from that directory so their `./data/` paths resolve. For **parameters description** take a look at `parameters_info.md`.
 
 **Bugs / Questions / Suggestions:**
 - Seek prompt advice in [Telegram group](https://t.me/joinchat/sp8P7sdAqaU0YmRi).
