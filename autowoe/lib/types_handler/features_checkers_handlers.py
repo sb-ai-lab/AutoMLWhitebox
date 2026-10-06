@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 F_UNIQUE = 5
+DEFAULT_DATE_FEATURE_TYPE: Tuple[Optional[str], Tuple[str, ...]] = (None, ("wd", "m", "y", "d"))
 
 
 def dates_checker(feature: pd.Series) -> bool:
@@ -31,7 +32,7 @@ def dates_checker(feature: pd.Series) -> bool:
 
 
 def dates_handler(
-    feature: pd.Series, feature_type: Tuple[Optional[str], Tuple[str, ...]] = (None, ("wd", "m", "y", "d"))
+    feature: pd.Series, feature_type: Tuple[Optional[str], Tuple[str, ...]] = DEFAULT_DATE_FEATURE_TYPE
 ) -> Tuple:
     """Handle datetime feature.
 

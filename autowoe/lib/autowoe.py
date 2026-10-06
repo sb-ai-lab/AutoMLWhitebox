@@ -427,7 +427,8 @@ class AutoWoE:
         Args:
             train: Training sample.
             target_name: Target variable's column name
-            features_type: Dictionary with feature types, "cat" - categorical, "real" - real, "date" - for date
+            features_type: Dictionary with feature types: "cat" - categorical, "real" - real,
+                "date" - date with default seasonalities, or a tuple ``(format, seasonalities)`` for dates.
             group_kf: Column name for GroupKFold
             max_bin_count: Dictionary with feature name -> maximum bin quantity values
             features_monotone_constraints: Dictionary with monotonic constraints for features.
