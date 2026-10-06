@@ -1,6 +1,20 @@
 from sklearn.metrics import roc_auc_score
 
 from autowoe import ReportDeco, AutoWoE
+from autowoe.lib.types_handler.features_checkers_handlers import DEFAULT_DATE_FEATURE_TYPE
+
+
+def test_date_feature_type_alias_works_in_fit(train_data):
+    num_col = [column for column in train_data.columns if "numb" in column]
+    date_col = [column for column in train_data.columns if "datetime" in column]
+    features_type = {**{column: "real" for column in num_col}, **{column: "date" for column in date_col}}
+    auto_woe = AutoWoE(
+        monotonic=True, max_bin_count=4, oof_woe=False, regularized_refit=False, p_val=0.05, debug=False, verbose=0
+    )
+
+    auto_woe.fit(train_data[num_col + date_col + ["target"]], target_name="target", features_type=features_type)
+
+    assert all(auto_woe.features_type[column] == DEFAULT_DATE_FEATURE_TYPE for column in date_col)
 
 
 def test_dates_and_stat_model(train_data, test_data, test_target):

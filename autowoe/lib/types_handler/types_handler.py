@@ -6,7 +6,7 @@ from typing import Any, Dict, Hashable, Optional
 
 import pandas as pd
 
-from .features_checkers_handlers import cat_checker, dates_checker, dates_handler
+from .features_checkers_handlers import DEFAULT_DATE_FEATURE_TYPE, cat_checker, dates_checker, dates_handler
 
 
 class TypesHandler:
@@ -103,6 +103,7 @@ class TypesHandler:
         Если feature_type[feature] == None, то парсим тип признака
         Иначе происходит обработка указанных типов.
         Возможные типы признаков:
+            "date" (сокращение для (None, ("wd", "m", "y", "d")))
             "cat"
             "real"
             ("%Y%d%m", ("m", "d", "wd", "h", "min"))
@@ -112,10 +113,15 @@ class TypesHandler:
 
         """
         for feature_name in self.public_features_type:
-            if not self.public_features_type[feature_name]:
+            feature_type = self.public_features_type[feature_name]
+            if feature_type == "date":
+                feature_type = DEFAULT_DATE_FEATURE_TYPE
+                self.__public_features_type[feature_name] = feature_type
+
+            if feature_type is None:
                 self.__feature_handler(feature_name)
-            elif isinstance(self.public_features_type[feature_name], tuple):  # переданы данные для дат
-                new_features, _ = dates_handler(self.train[feature_name], self.public_features_type[feature_name])
+            elif isinstance(feature_type, tuple):  # переданы данные для дат
+                new_features, _ = dates_handler(self.train[feature_name], feature_type)
                 for new_feature_name, new_feature in new_features:
                     self.__train[new_feature_name] = new_feature
                     self.__max_bin_count[new_feature_name] = self.max_bin_count[feature_name]
@@ -124,16 +130,20 @@ class TypesHandler:
                         feature_name
                     ]
 
-            elif self.public_features_type[feature_name] == "cat":
+            elif feature_type == "cat":
                 self.__private_features_type[feature_name] = "cat"
                 self.__features_monotone_constraints[feature_name] = "1"
 
-            elif self.public_features_type[feature_name] == "real":
+            elif feature_type == "real":
                 self.__private_features_type[feature_name] = "real"
                 self.__train[feature_name] = pd.to_numeric(self.train[feature_name], errors="coerce")
 
             else:
-                raise ValueError("The specified data type is not supported")
+                raise ValueError(
+                    f"Unsupported feature type for {feature_name!r}: {feature_type!r}. "
+                    "Use None (automatic detection), 'cat', 'real', 'date', or a date tuple such as "
+                    "(None, ('wd', 'm', 'y', 'd'))."
+                )
 
         return (
             self.train,
