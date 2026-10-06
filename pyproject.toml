@@ -28,11 +28,8 @@ scipy = "*"
 pandas = "*"
 scikit-learn = ">=1.0.1"
 lightgbm = ">=4.6.0"
-sphinx = "*"
-sphinx-rtd-theme = "*"
 joblib = ">=1.2.0"
 pytz = "*"
-pytest = "*"
 jinja2 = "*"
 matplotlib = "*"
 pillow = ">=12.3.0"
@@ -42,10 +39,16 @@ urllib3 = ">=2.8.0"
 seaborn = ">=0.13.2"
 tqdm = "^4.62.3"
 StrEnum = "^0.4.7"
+s3fs = { version = "*", optional = true }
 
+[tool.poetry.extras]
+s3 = ["s3fs"]
 
 
 [tool.poetry.group.dev.dependencies]
+pytest = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
 notebook = "^6.4.6"
 black = ">=24.10.0"
 pre-commit = "2.15.0"
