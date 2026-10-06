@@ -5,6 +5,7 @@ from typing import Optional, Tuple, cast
 
 import numpy as np
 import sklearn
+from packaging.version import Version
 from scipy import linalg, stats
 from sklearn.linear_model import Lasso, LinearRegression, LogisticRegression
 from sklearn.svm import l1_min_c
@@ -17,9 +18,17 @@ logger = get_logger(__name__)
 
 
 def _sklearn_at_least(major: int, minor: int) -> bool:
-    """Compare sklearn version numerically (str comparison breaks on 1.10+)."""
-    ver = sklearn.__version__.split(".")
-    return (int(ver[0]), int(ver[1])) >= (major, minor)
+    """Compare the installed scikit-learn version using PEP 440 ordering."""
+    return Version(sklearn.__version__) >= Version(f"{major}.{minor}.0")
+
+
+def _logreg_penalty() -> Optional[str]:
+    """Return the LogisticRegression penalty supported by the installed sklearn.
+
+    PEP 440 prereleases and development releases before 1.2.0 keep using the
+    legacy ``"none"`` spelling. Local builds of 1.2.0 and later use ``None``.
+    """
+    return None if _sklearn_at_least(1, 2) else "none"
 
 
 def refit_reg(
@@ -132,7 +141,7 @@ def refit_simple(
 
     n = -1
 
-    logreg_penalty = None if _sklearn_at_least(1, 2) else "none"
+    logreg_penalty = _logreg_penalty()
 
     while True:
         n += 1
@@ -246,7 +255,7 @@ def calc_p_val_on_valid(
         p values, b vars.
 
     """
-    logreg_penalty = None if _sklearn_at_least(1, 2) else "none"
+    logreg_penalty = _logreg_penalty()
 
     if task == TaskType.BIN:
         model = LogisticRegression(penalty=logreg_penalty, solver="lbfgs", warm_start=False, intercept_scaling=1)
